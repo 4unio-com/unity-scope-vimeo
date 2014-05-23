@@ -18,11 +18,6 @@ target_link_libraries(
   ${SCOPE_LDFLAGS}
 )
 
-set_property(
-  TARGET ${SCOPE_NAME}
-  PROPERTY COMPILE_FLAGS ${SCOPE_CFLAGS}
-)
-
 install(
   TARGETS ${SCOPE_NAME}
   LIBRARY DESTINATION ${SCOPE_INSTALL_DIR}

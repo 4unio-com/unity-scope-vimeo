@@ -4,9 +4,6 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 
 add_definitions(
   -std=c++11
-  -pedantic
-  -Wall
-  -Wextra
 )
 
 include(GNUInstallDirs)
@@ -15,8 +12,8 @@ include(FindPkgConfig)
 pkg_check_modules(
   SCOPE
   libunity-scopes>=0.4.0
-  #jsoncpp
-  #net-cpp
+  jsoncpp
+  net-cpp
   REQUIRED
 )
 
