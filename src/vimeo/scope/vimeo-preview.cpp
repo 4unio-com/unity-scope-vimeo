@@ -16,7 +16,7 @@
  * Author: Pete Woods <pete.woods@canonical.com>
  */
 
-#include <vimeo-preview.h>
+#include <vimeo/scope/vimeo-preview.h>
 
 #include <unity/scopes/PreviewWidget.h>
 #include <unity/scopes/ColumnLayout.h>
@@ -24,6 +24,7 @@
 
 namespace sc = unity::scopes;
 using namespace std;
+using namespace vimeo::scope;
 
 VimeoPreview::VimeoPreview(string const& uri) :
         uri_(uri) {

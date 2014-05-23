@@ -16,14 +16,17 @@
  * Author: Pete Woods <pete.woods@canonical.com>
  */
 
-#ifndef VIMEO_SCOPE_H_
-#define VIMEO_SCOPE_H_
+#ifndef VIMEO_SCOPE_VIMEOSCOPE_H_
+#define VIMEO_SCOPE_VIMEOSCOPE_H_
 
 #include <unity/scopes/ScopeBase.h>
 #include <unity/scopes/QueryBase.h>
 #include <unity/scopes/ReplyProxyFwd.h>
 #include <unity/scopes/QueryBase.h>
 #include <unity/scopes/PreviewQueryBase.h>
+
+namespace vimeo {
+namespace scope {
 
 class VimeoScope: public unity::scopes::ScopeBase {
 public:
@@ -38,5 +41,8 @@ public:
             unity::scopes::CannedQuery const& q,
             unity::scopes::SearchMetadata const&) override;
 };
+
+}
+}
 
 #endif // VIMEO_SCOPE_H_

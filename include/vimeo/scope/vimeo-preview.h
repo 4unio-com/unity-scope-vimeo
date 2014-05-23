@@ -16,10 +16,13 @@
  * Author: Pete Woods <pete.woods@canonical.com>
  */
 
-#ifndef VIMEO_PREVIEW_H_
-#define VIMEO_PREVIEW_H_
+#ifndef VIMEO_SCOPE_VIMEOPREVIEW_H_
+#define VIMEO_SCOPE_VIMEOPREVIEW_H_
 
 #include <unity/scopes/PreviewQueryBase.h>
+
+namespace vimeo {
+namespace scope {
 
 class VimeoPreview: public unity::scopes::PreviewQueryBase {
 public:
@@ -34,5 +37,8 @@ public:
 private:
     std::string uri_;
 };
+
+}
+}
 
 #endif // VIMEO_PREVIEW_H_

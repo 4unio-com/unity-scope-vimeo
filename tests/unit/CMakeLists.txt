@@ -1,6 +1,6 @@
 add_executable(
   ${SCOPE_NAME}-unit-tests
-  test-vimeo-scope.cpp
+  vimeo/scope/test-vimeo-scope.cpp
 )
 
 target_link_libraries(

@@ -8,9 +8,9 @@ configure_file(
 
 add_library(
   ${SCOPE_NAME} SHARED
-  vimeo-preview.cpp
-  vimeo-query.cpp
-  vimeo-scope.cpp
+  vimeo/scope/vimeo-preview.cpp
+  vimeo/scope/vimeo-query.cpp
+  vimeo/scope/vimeo-scope.cpp
 )
 
 target_link_libraries(

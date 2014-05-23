@@ -16,12 +16,13 @@
  * Author: Pete Woods <pete.woods@canonical.com>
  */
 
-#include <vimeo-scope.h>
-#include <vimeo-query.h>
-#include <vimeo-preview.h>
+#include <vimeo/scope/vimeo-scope.h>
+#include <vimeo/scope/vimeo-query.h>
+#include <vimeo/scope/vimeo-preview.h>
 
 namespace sc = unity::scopes;
 using namespace std;
+using namespace vimeo::scope;
 
 int VimeoScope::start(string const&, sc::RegistryProxy const&) {
     return VERSION;

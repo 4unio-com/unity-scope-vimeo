@@ -16,11 +16,14 @@
  * Author: Pete Woods <pete.woods@canonical.com>
  */
 
-#ifndef VIMEO_QUERY_H_
-#define VIMEO_QUERY_H_
+#ifndef VIMEO_SCOPE_VIMEOQUERY_H_
+#define VIMEO_SCOPE_VIMEOQUERY_H_
 
 #include <unity/scopes/SearchQueryBase.h>
 #include <unity/scopes/ReplyProxyFwd.h>
+
+namespace vimeo {
+namespace scope {
 
 class VimeoQuery : public unity::scopes::SearchQueryBase
 {
@@ -36,6 +39,9 @@ public:
 private:
     std::string query_;
 };
+
+}
+}
 
 #endif // VIMEO_QUERY_H_
 

@@ -16,7 +16,7 @@
  * Author: Pete Woods <pete.woods@canonical.com>
  */
 
-#include <vimeo-query.h>
+#include <vimeo/scope/vimeo-query.h>
 
 #include <unity/scopes/Annotation.h>
 #include <unity/scopes/CategorisedResult.h>
@@ -26,6 +26,7 @@
 
 namespace sc = unity::scopes;
 using namespace std;
+using namespace vimeo::scope;
 
 VimeoQuery::VimeoQuery(string const& query) :
     query_(query)
