@@ -15,6 +15,8 @@ include(FindPkgConfig)
 pkg_check_modules(
   SCOPE
   libunity-scopes>=0.4.0
+  #jsoncpp
+  #net-cpp
   REQUIRED
 )
 
