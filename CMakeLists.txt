@@ -1,16 +1,25 @@
-project(unity-scope-vimeo CXX)
+project(unity-scope-vimeo C CXX)
 cmake_minimum_required(VERSION 2.8.10)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 
 add_definitions(
-  -std=c++11
+  -pedantic
+  -Wall
+  -Wextra
 )
+
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -fno-permissive")
+set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} -std=c11)
 
 include(GNUInstallDirs)
 include(FindPkgConfig)
 
 pkg_check_modules(
   SCOPE
+  glib-2.0
+  gio-unix-2.0
+  libaccounts-glib
+  libsignon-glib
   libunity-scopes>=0.4.0
   jsoncpp
   net-cpp

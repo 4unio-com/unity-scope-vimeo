@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<provider id="vimeo">
+  <name>Vimeo</name>
+  <icon>vimeo</icon>
+  <translations>account-plugins</translations>
+  <plugin>generic-oauth</plugin>
+  <domains>.*vimeo\.com</domains>
+
+  <template>
+    <group name="auth">
+      <setting name="method">oauth2</setting>
+      <setting name="mechanism">web_server</setting>
+      <group name="oauth2">
+        <group name="web_server">
+          <setting name="Host">api.vimeo.com</setting>
+          <setting name="AuthPath">oauth/authorize</setting>
+          <setting name="TokenPath">oauth/access_token</setting>
+          <setting name="RedirectUri">https://wiki.ubuntu.com/</setting>
+          <setting name="ResponseType">code</setting>
+          <setting name="Display">popup</setting>
+          <setting type="as" name="Scope">['public']</setting>
+          <setting name="ClientId">6e4cfe81bcf04f5ef8d0d059f353a5eaa9bd6d19</setting>
+          <setting name="ClientSecret">bd23bc02c85163bacf4ab6fe1387c34316d31509</setting>
+          <setting type="as" name="AllowedSchemes">['https','http']</setting>
+        </group>
+      </group>
+    </group>
+  </template>
+</provider>

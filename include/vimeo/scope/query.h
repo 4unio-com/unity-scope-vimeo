@@ -16,29 +16,35 @@
  * Author: Pete Woods <pete.woods@canonical.com>
  */
 
-#ifndef VIMEO_SCOPE_VIMEOPREVIEW_H_
-#define VIMEO_SCOPE_VIMEOPREVIEW_H_
+#ifndef VIMEO_SCOPE_QUERY_H_
+#define VIMEO_SCOPE_QUERY_H_
 
-#include <unity/scopes/PreviewQueryBase.h>
+#include <vimeo/api/client.h>
+
+#include <unity/scopes/SearchQueryBase.h>
+#include <unity/scopes/ReplyProxyFwd.h>
 
 namespace vimeo {
 namespace scope {
 
-class VimeoPreview: public unity::scopes::PreviewQueryBase {
+class Query: public unity::scopes::SearchQueryBase {
 public:
-    VimeoPreview(std::string const& uri);
+    Query(std::string const& query);
 
-    ~VimeoPreview() = default;
+    ~Query() = default;
 
     void cancelled() override;
 
-    void run(unity::scopes::PreviewReplyProxy const& reply) override;
+    void run(unity::scopes::SearchReplyProxy const& reply) override;
 
 private:
-    std::string uri_;
+    std::string query_;
+
+    vimeo::api::Client client_;
 };
 
 }
 }
 
-#endif // VIMEO_PREVIEW_H_
+#endif // VIMEO_SCOPE_QUERY_H_
+

@@ -3,14 +3,17 @@
 # .so file so test tools can find both easily.
 configure_file(
   "${CMAKE_SOURCE_DIR}/data/${SCOPE_NAME}.ini"
-  "${CMAKE_BINARY_DIR}/${SCOPE_NAME}.ini"
+  "${CMAKE_CURRENT_BINARY_DIR}/${SCOPE_NAME}.ini"
 )
 
 add_library(
   ${SCOPE_NAME} SHARED
-  vimeo/scope/vimeo-preview.cpp
-  vimeo/scope/vimeo-query.cpp
-  vimeo/scope/vimeo-scope.cpp
+  vimeo/api/simple-oauth.cpp
+  vimeo/api/client.cpp
+  vimeo/api/video.cpp
+  vimeo/scope/preview.cpp
+  vimeo/scope/query.cpp
+  vimeo/scope/scope.cpp
 )
 
 target_link_libraries(

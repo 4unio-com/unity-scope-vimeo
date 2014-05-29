@@ -16,19 +16,50 @@
  * Author: Pete Woods <pete.woods@canonical.com>
  */
 
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
+#ifndef VIMEO_API_VIDEO_H_
+#define VIMEO_API_VIDEO_H_
 
-using namespace std;
-using namespace testing;
+#include <memory>
+#include <string>
 
-namespace {
-
-class TestVimeoScope: public Test {
-protected:
-};
-
-TEST_F(TestVimeoScope, Foo) {
+namespace Json {
+class Value;
 }
 
-} // namespace
+namespace vimeo {
+namespace api {
+
+class Video {
+public:
+    typedef std::shared_ptr<Video> Ptr;
+
+    Video(const Json::Value &data);
+
+    virtual ~Video() = default;
+
+    const std::string & name() const;
+
+    const std::string & username() const;
+
+    const std::string & uri() const;
+
+    const std::string & picture() const;
+
+    const std::string & description() const;
+
+protected:
+    std::string name_;
+
+    std::string username_;
+
+    std::string uri_;
+
+    std::string picture_;
+
+    std::string description_;
+};
+
+}
+}
+
+#endif // VIMEO_API_VIDEO_H_

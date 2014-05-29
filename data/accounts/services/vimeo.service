@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service id="vimeo">
+  <type>sharing</type>
+  <name>Vimeo</name>
+  <icon>vimeo</icon>
+  <provider>vimeo</provider>
+  <translations>account-plugins</translations>
+</service>

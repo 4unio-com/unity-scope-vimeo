@@ -16,32 +16,33 @@
  * Author: Pete Woods <pete.woods@canonical.com>
  */
 
-#ifndef VIMEO_SCOPE_VIMEOQUERY_H_
-#define VIMEO_SCOPE_VIMEOQUERY_H_
+#ifndef VIMEO_SCOPE_SCOPE_H_
+#define VIMEO_SCOPE_SCOPE_H_
 
-#include <unity/scopes/SearchQueryBase.h>
+#include <unity/scopes/ScopeBase.h>
+#include <unity/scopes/QueryBase.h>
 #include <unity/scopes/ReplyProxyFwd.h>
+#include <unity/scopes/QueryBase.h>
+#include <unity/scopes/PreviewQueryBase.h>
 
 namespace vimeo {
 namespace scope {
 
-class VimeoQuery : public unity::scopes::SearchQueryBase
-{
+class Scope: public unity::scopes::ScopeBase {
 public:
-    VimeoQuery(std::string const& query);
+    int start(std::string const&, unity::scopes::RegistryProxy const&) override;
 
-    ~VimeoQuery() = default;
+    void stop() override;
 
-    void cancelled() override;
+    unity::scopes::PreviewQueryBase::UPtr preview(const unity::scopes::Result&,
+            const unity::scopes::ActionMetadata&) override;
 
-    void run(unity::scopes::SearchReplyProxy const& reply) override;
-
-private:
-    std::string query_;
+    virtual unity::scopes::SearchQueryBase::UPtr search(
+            unity::scopes::CannedQuery const& q,
+            unity::scopes::SearchMetadata const&) override;
 };
 
 }
 }
 
-#endif // VIMEO_QUERY_H_
-
+#endif // VIMEO_SCOPE_SCOPE_H_

@@ -19,6 +19,8 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+#include <iostream>
+
 using namespace std;
 using namespace testing;
 
@@ -26,10 +28,12 @@ namespace {
 
 class VimeoFunctionalTests: public Test {
 protected:
-
 };
 
 TEST_F(VimeoFunctionalTests, Foo) {
+//    SimpleOAuth oauth("facebook-im");
+//    SimpleOAuth::AuthData auth_data = oauth.auth_data();
+//    cout << auth_data.access_token << endl;
 }
 
 } // namespace

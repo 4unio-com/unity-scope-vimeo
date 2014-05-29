@@ -16,33 +16,29 @@
  * Author: Pete Woods <pete.woods@canonical.com>
  */
 
-#ifndef VIMEO_SCOPE_VIMEOSCOPE_H_
-#define VIMEO_SCOPE_VIMEOSCOPE_H_
+#ifndef VIMEO_SCOPE_PREVIEW_H_
+#define VIMEO_SCOPE_PREVIEW_H_
 
-#include <unity/scopes/ScopeBase.h>
-#include <unity/scopes/QueryBase.h>
-#include <unity/scopes/ReplyProxyFwd.h>
-#include <unity/scopes/QueryBase.h>
 #include <unity/scopes/PreviewQueryBase.h>
 
 namespace vimeo {
 namespace scope {
 
-class VimeoScope: public unity::scopes::ScopeBase {
+class Preview: public unity::scopes::PreviewQueryBase {
 public:
-    int start(std::string const&, unity::scopes::RegistryProxy const&) override;
+    Preview(std::string const& uri);
 
-    void stop() override;
+    ~Preview() = default;
 
-    unity::scopes::PreviewQueryBase::UPtr preview(const unity::scopes::Result&,
-            const unity::scopes::ActionMetadata&) override;
+    void cancelled() override;
 
-    virtual unity::scopes::SearchQueryBase::UPtr search(
-            unity::scopes::CannedQuery const& q,
-            unity::scopes::SearchMetadata const&) override;
+    void run(unity::scopes::PreviewReplyProxy const& reply) override;
+
+private:
+    std::string uri_;
 };
 
 }
 }
 
-#endif // VIMEO_SCOPE_H_
+#endif // VIMEO_SCOPE_PREVIEW_H_

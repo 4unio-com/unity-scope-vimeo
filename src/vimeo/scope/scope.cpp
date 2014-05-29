@@ -16,30 +16,30 @@
  * Author: Pete Woods <pete.woods@canonical.com>
  */
 
-#include <vimeo/scope/vimeo-scope.h>
-#include <vimeo/scope/vimeo-query.h>
-#include <vimeo/scope/vimeo-preview.h>
+#include <vimeo/scope/scope.h>
+#include <vimeo/scope/query.h>
+#include <vimeo/scope/preview.h>
 
 namespace sc = unity::scopes;
 using namespace std;
 using namespace vimeo::scope;
 
-int VimeoScope::start(string const&, sc::RegistryProxy const&) {
+int Scope::start(string const&, sc::RegistryProxy const&) {
     return VERSION;
 }
 
-void VimeoScope::stop() {
+void Scope::stop() {
 }
 
-sc::SearchQueryBase::UPtr VimeoScope::search(sc::CannedQuery const &q,
+sc::SearchQueryBase::UPtr Scope::search(sc::CannedQuery const &q,
         sc::SearchMetadata const&) {
-    sc::SearchQueryBase::UPtr query(new VimeoQuery(q.query_string()));
+    sc::SearchQueryBase::UPtr query(new Query(q.query_string()));
     return query;
 }
 
-sc::PreviewQueryBase::UPtr VimeoScope::preview(sc::Result const& result,
+sc::PreviewQueryBase::UPtr Scope::preview(sc::Result const& result,
         sc::ActionMetadata const& /*metadata*/) {
-    sc::PreviewQueryBase::UPtr preview(new VimeoPreview(result.uri()));
+    sc::PreviewQueryBase::UPtr preview(new Preview(result.uri()));
     return preview;
 }
 
@@ -51,7 +51,7 @@ EXPORT
 unity::scopes::ScopeBase*
 // cppcheck-suppress unusedFunction
 UNITY_SCOPE_CREATE_FUNCTION() {
-    return new VimeoScope();
+    return new Scope();
 }
 
 EXPORT
