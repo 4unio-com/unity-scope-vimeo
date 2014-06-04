@@ -19,6 +19,7 @@
 #ifndef VIMEO_API_CLIENT_H_
 #define VIMEO_API_CLIENT_H_
 
+#include <vimeo/api/channel.h>
 #include <vimeo/api/config.h>
 #include <vimeo/api/video.h>
 
@@ -37,13 +38,17 @@ namespace api {
 
 class Client {
 public:
+    typedef std::deque<Channel::Ptr> ChannelList;
+
     typedef std::deque<Video::Ptr> VideoList;
 
     Client(Config::Ptr config);
 
     virtual ~Client() = default;
 
-    virtual VideoList videos(const std::string &query);
+    virtual ChannelList channels();
+
+    virtual VideoList videos(const std::string &query = std::string());
 
     virtual VideoList channels_videos(const std::string &channel);
 
@@ -60,8 +65,6 @@ protected:
 
     core::net::http::Request::Progress::Next progress_report(
             const core::net::http::Request::Progress& progress);
-
-    VideoList get_videos(const Json::Value& root);
 
     Config::Ptr config_;
 

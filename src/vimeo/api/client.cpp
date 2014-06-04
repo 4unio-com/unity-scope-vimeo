@@ -86,11 +86,12 @@ void Client::get(const deque<string> &endpoints,
     }
 }
 
-Client::VideoList Client::get_videos(const json::Value &root) {
-    VideoList results;
+template<typename T>
+static deque<shared_ptr<T>> get_list(const json::Value &root) {
+    deque<shared_ptr<T>> results;
     json::Value data = root["data"];
     for (json::ArrayIndex index = 0; index < data.size(); ++index) {
-        results.push_back(make_shared<Video>(data[index]));
+        results.push_back(make_shared<T>(data[index]));
     }
     return results;
 }
@@ -98,19 +99,25 @@ Client::VideoList Client::get_videos(const json::Value &root) {
 Client::VideoList Client::videos(const string &query) {
     json::Value root;
     get( { "videos" }, { { "query", query } }, root);
-    return get_videos(root);
+    return get_list<Video>(root);
+}
+
+Client::ChannelList Client::channels() {
+    json::Value root;
+    get( { "channels" }, { { "sort", "followers" } }, root);
+    return get_list<Channel>(root);
 }
 
 Client::VideoList Client::channels_videos(const string &channel) {
     json::Value root;
     get( { "channels", channel, "videos" }, { }, root);
-    return get_videos(root);
+    return get_list<Video>(root);
 }
 
 Client::VideoList Client::feed() {
     json::Value root;
     get( { "me", "feed" }, { }, root);
-    return get_videos(root);
+    return get_list<Video>(root);
 }
 
 http::Request::Progress::Next Client::progress_report(

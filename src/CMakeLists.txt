@@ -9,6 +9,7 @@ configure_file(
 add_library(
   ${SCOPE_NAME} SHARED
   vimeo/api/simple-oauth.cpp
+  vimeo/api/channel.cpp
   vimeo/api/client.cpp
   vimeo/api/video.cpp
   vimeo/scope/preview.cpp
