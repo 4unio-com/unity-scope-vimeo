@@ -19,6 +19,8 @@
 #ifndef VIMEO_SCOPE_SCOPE_H_
 #define VIMEO_SCOPE_SCOPE_H_
 
+#include <vimeo/api/config.h>
+
 #include <unity/scopes/ScopeBase.h>
 #include <unity/scopes/QueryBase.h>
 #include <unity/scopes/ReplyProxyFwd.h>
@@ -40,6 +42,9 @@ public:
     virtual unity::scopes::SearchQueryBase::UPtr search(
             unity::scopes::CannedQuery const& q,
             unity::scopes::SearchMetadata const&) override;
+
+protected:
+    vimeo::api::Config::Ptr config_;
 };
 
 }

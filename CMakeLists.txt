@@ -12,7 +12,13 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -fno-permissive")
 set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} -std=c11)
 
 include(GNUInstallDirs)
-include(FindPkgConfig)
+find_package(PkgConfig)
+
+find_package(
+  Boost
+  COMPONENTS
+    algorithm
+)
 
 pkg_check_modules(
   SCOPE
@@ -28,6 +34,7 @@ pkg_check_modules(
 
 include_directories(
   "${CMAKE_SOURCE_DIR}/include"
+  ${Boost_INCLUDE_DIRS}
   ${SCOPE_INCLUDE_DIRS}
 )
 

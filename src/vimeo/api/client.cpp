@@ -31,19 +31,8 @@ namespace net = core::net;
 using namespace vimeo::api;
 using namespace std;
 
-Client::Client(const string &access_token, const string &client_id,
-        const string &client_secret, bool dev) :
-        cancelled_(false) {
-
-    config_ = make_shared<Config>();
-    config_->access_token = access_token;
-    config_->client_id = client_id;
-    config_->client_secret = client_secret;
-    config_->apiroot = string("https://api.vimeo.") + (dev ? "dev" : "com");
-    config_->user_agent =
-            "unity-scope-vimeo 0.1; (http: //developer.vimeo.com/api/docs)";
-    config_->dev = dev;
-    config_->accept = "application/vnd.vimeo.*+json; version=3.0";
+Client::Client(Config::Ptr config) :
+        config_(config), cancelled_(false) {
 }
 
 void Client::get(const deque<string> &endpoints,
@@ -71,6 +60,11 @@ void Client::get(const deque<string> &endpoints,
     if (!config_->access_token.empty()) {
         configuration.header.add("Authorization",
                 "bearer " + config_->access_token);
+    } else if (!config_->client_id.empty() && !config_->client_secret.empty()) {
+        string auth = "basic "
+                + client->base64_encode(
+                        config_->client_id + ":" + config_->client_secret);
+        configuration.header.add("Authorization", auth);
     }
     configuration.header.add("Accept", config_->accept);
     configuration.header.add("User-Agent", config_->user_agent);
@@ -85,23 +79,38 @@ void Client::get(const deque<string> &endpoints,
         reader.parse(response.body, root);
 
         if (response.status != http::Status::ok) {
+            cerr << "ERROR: " << response.body << endl;
             throw domain_error(root["error"].asString());
         }
     } catch (net::Error &) {
     }
 }
 
-Client::VideoList Client::videos(const string &query) {
-    json::Value root;
-    get( { "videos" }, { { "query", query } }, root);
-
+Client::VideoList Client::get_videos(const json::Value &root) {
     VideoList results;
     json::Value data = root["data"];
     for (json::ArrayIndex index = 0; index < data.size(); ++index) {
         results.push_back(make_shared<Video>(data[index]));
     }
-
     return results;
+}
+
+Client::VideoList Client::videos(const string &query) {
+    json::Value root;
+    get( { "videos" }, { { "query", query } }, root);
+    return get_videos(root);
+}
+
+Client::VideoList Client::channels_videos(const string &channel) {
+    json::Value root;
+    get( { "channels", channel, "videos" }, { }, root);
+    return get_videos(root);
+}
+
+Client::VideoList Client::feed() {
+    json::Value root;
+    get( { "me", "feed" }, { }, root);
+    return get_videos(root);
 }
 
 http::Request::Progress::Next Client::progress_report(
@@ -114,4 +123,8 @@ http::Request::Progress::Next Client::progress_report(
 
 void Client::cancel() {
     cancelled_ = true;
+}
+
+Config::Ptr Client::config() {
+    return config_;
 }

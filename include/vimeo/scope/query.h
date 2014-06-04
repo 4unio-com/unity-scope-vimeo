@@ -29,7 +29,7 @@ namespace scope {
 
 class Query: public unity::scopes::SearchQueryBase {
 public:
-    Query(std::string const& query);
+    Query(std::string const& query, vimeo::api::Config::Ptr config);
 
     ~Query() = default;
 

@@ -54,14 +54,14 @@ struct Config {
     std::string user_agent { };
 
     /*
-     * Run in development mode?
-     */
-    bool dev;
-
-    /*
      * Default "Accept" HTTP header sent with every request if none is specified
      */
     std::string accept { };
+
+    /**
+     * Have we got access to private APIs?
+     */
+    bool authenticated = false;
 };
 
 }

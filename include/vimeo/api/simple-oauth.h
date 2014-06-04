@@ -44,6 +44,10 @@ public:
 
     virtual SimpleOAuth::AuthData auth_data() const;
 
+    virtual void unauthenticated(const std::string &clientId,
+            const std::string &clientSecret, const std::string &uri,
+            const std::map<std::string, std::string> &querys);
+
 protected:
     void auth_login(const std::string &clientId, const std::string &clientSecret,
             const std::string &accessToken);

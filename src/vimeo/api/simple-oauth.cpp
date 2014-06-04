@@ -18,7 +18,17 @@
 
 #include <vimeo/api/simple-oauth.h>
 
+#include <core/net/error.h>
+#include <core/net/http/client.h>
+#include <core/net/http/content_type.h>
+#include <core/net/http/response.h>
+#include <json/json.h>
+
 #include <iostream>
+
+namespace http = core::net::http;
+namespace json = Json;
+namespace net = core::net;
 
 using namespace vimeo::api;
 using namespace std;
@@ -31,6 +41,52 @@ SimpleOAuth::SimpleOAuth(const std::string &service_name) :
     g_idle_add(setup_context_cb, this);
 
     g_main_loop_run(main_loop_.get());
+}
+
+void SimpleOAuth::unauthenticated(const std::string &client_id,
+        const std::string &client_secret, const std::string &uri,
+        const map<string, string> &querys) {
+    auto client = http::make_client();
+
+    http::Request::Configuration configuration;
+    configuration.uri = uri;
+    bool first = true;
+    for (auto it : querys) {
+        if (first) {
+            configuration.uri.append("?");
+            first = false;
+        } else {
+            configuration.uri.append("&");
+        }
+        configuration.uri.append(client->url_escape(it.first));
+        configuration.uri.append("=");
+        configuration.uri.append(client->url_escape(it.second));
+    }
+
+    string auth = "basic "
+            + client->base64_encode(client_id + ":" + client_secret);
+    configuration.header.add("Authorization", auth);
+//        configuration.header.add("Accept", config_->accept);
+
+    auto request = client->post(configuration, string(), string());
+
+    try {
+        auto response = request->execute([](const http::Request::Progress&) {
+            return http::Request::Progress::Next::continue_operation;
+        });
+
+        json::Reader reader;
+        json::Value root;
+        reader.parse(response.body, root);
+
+        if (response.status == http::Status::ok) {
+            auth_login(client_id, client_secret,
+                    root["access_token"].asString());
+        } else {
+            throw domain_error(root["error"].asString());
+        }
+    } catch (net::Error &) {
+    }
 }
 
 SimpleOAuth::AuthData SimpleOAuth::auth_data() const {
@@ -94,7 +150,7 @@ void SimpleOAuth::login_service() {
                     ag_auth_data_get_method(ag_auth_data_), &error),
             g_object_unref);
     if (error != NULL) {
-        fprintf(stderr, "Could not set up auth session: %s\n", error->message);
+        cerr << "Could not set up auth session: " << error->message << endl;
         g_error_free(error);
         return;
     }
@@ -147,7 +203,6 @@ void SimpleOAuth::lookup_account_service() {
     if (account_service_) {
         login_service();
     } else {
-        cerr << "Couldn't find specified service name: " << service_name_;
         g_main_loop_quit(main_loop_.get());
     }
 }

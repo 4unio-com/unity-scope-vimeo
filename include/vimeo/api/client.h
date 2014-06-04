@@ -39,15 +39,19 @@ class Client {
 public:
     typedef std::deque<Video::Ptr> VideoList;
 
-    Client(const std::string &access_token = std::string(),
-            const std::string &client_id = std::string(),
-            const std::string &client_secret = std::string(), bool dev = false);
+    Client(Config::Ptr config);
 
     virtual ~Client() = default;
 
     virtual VideoList videos(const std::string &query);
 
+    virtual VideoList channels_videos(const std::string &channel);
+
+    virtual VideoList feed();
+
     virtual void cancel();
+
+    virtual Config::Ptr config();
 
 protected:
     void get(const std::deque<std::string> &endpoint,
@@ -56,6 +60,8 @@ protected:
 
     core::net::http::Request::Progress::Next progress_report(
             const core::net::http::Request::Progress& progress);
+
+    VideoList get_videos(const Json::Value& root);
 
     Config::Ptr config_;
 

@@ -16,6 +16,8 @@
  * Author: Pete Woods <pete.woods@canonical.com>
  */
 
+#include <boost/algorithm/string/trim.hpp>
+
 #include <vimeo/scope/query.h>
 
 #include <unity/scopes/Annotation.h>
@@ -25,6 +27,7 @@
 #include <unity/scopes/SearchReply.h>
 
 namespace sc = unity::scopes;
+namespace alg = boost::algorithm;
 
 using namespace std;
 using namespace vimeo::api;
@@ -48,8 +51,8 @@ const static string SEARCH_CATEGORY_TEMPLATE = ""
         "  }"
         "}";
 
-Query::Query(string const& query) :
-        query_(query), client_("3cf63e6378074d2521f25be2b8aecea0") {
+Query::Query(string const& query, Config::Ptr config) :
+        query_(query), client_(config) {
 }
 
 void Query::cancelled() {
@@ -57,11 +60,24 @@ void Query::cancelled() {
 }
 
 void Query::run(sc::SearchReplyProxy const& reply) {
-    auto cat = reply->register_category("videos", "Videos", "",
+    auto cat = reply->register_category("vimeo", "Vimeo", "",
             sc::CategoryRenderer(SEARCH_CATEGORY_TEMPLATE));
 
     try {
-        Client::VideoList videos = client_.videos(query_);
+        Client::VideoList videos;
+
+        string query = alg::trim_copy(query_);
+
+        if (query.empty()) {
+            if (client_.config()->authenticated) {
+                videos = client_.feed();
+            } else {
+                videos = client_.channels_videos("staffpicks");
+            }
+        } else {
+            videos = client_.videos(query);
+        }
+
         for (Video::Ptr video : videos) {
             sc::CategorisedResult res(cat);
             res.set_uri(video->uri());

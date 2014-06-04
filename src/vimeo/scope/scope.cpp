@@ -16,13 +16,18 @@
  * Author: Pete Woods <pete.woods@canonical.com>
  */
 
+#include <vimeo/api/simple-oauth.h>
+
 #include <vimeo/scope/scope.h>
 #include <vimeo/scope/query.h>
 #include <vimeo/scope/preview.h>
 
+#include <iostream>
+
 namespace sc = unity::scopes;
 using namespace std;
 using namespace vimeo::scope;
+using namespace vimeo::api;
 
 int Scope::start(string const&, sc::RegistryProxy const&) {
     return VERSION;
@@ -33,7 +38,33 @@ void Scope::stop() {
 
 sc::SearchQueryBase::UPtr Scope::search(sc::CannedQuery const &q,
         sc::SearchMetadata const&) {
-    sc::SearchQueryBase::UPtr query(new Query(q.query_string()));
+    if (!config_) {
+        config_ = make_shared<Config>();
+        config_->apiroot = "https://api.vimeo.com";
+        config_->user_agent =
+                "unity-scope-vimeo 0.1; (http: //developer.vimeo.com/api/docs)";
+        config_->accept = "application/vnd.vimeo.*+json; version=3.0";
+
+        SimpleOAuth oauth("vimeo");
+        SimpleOAuth::AuthData auth_data = oauth.auth_data();
+        if (auth_data.access_token.empty()) {
+            oauth.unauthenticated("6e4cfe81bcf04f5ef8d0d059f353a5eaa9bd6d19",
+                    "bd23bc02c85163bacf4ab6fe1387c34316d31509",
+                    "https://api.vimeo.com/oauth/authorize/client", { {
+                            "grant_type", "client_credentials" }, { "scope",
+                            "public" } });
+            auth_data = oauth.auth_data();
+        } else {
+            config_->authenticated = true;
+//            auth_data.access_token = "b59317d7a67960019bd15eda6210d1a3";
+        }
+
+        config_->access_token = auth_data.access_token;
+        config_->client_id = auth_data.client_id;
+        config_->client_secret = auth_data.client_secret;
+    }
+
+    sc::SearchQueryBase::UPtr query(new Query(q.query_string(), config_));
     return query;
 }
 
