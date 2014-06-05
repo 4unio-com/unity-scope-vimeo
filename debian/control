@@ -1,0 +1,31 @@
+Source: unity-scope-vimeo
+Section: x11
+Priority: optional
+Build-Depends: cmake (>= 2.8.10),
+               debhelper (>= 9),
+               dh-translations,
+               google-mock,
+               intltool,
+               libaccounts-glib-dev,
+               libboost1.55-dev,
+               libglib2.0-dev,
+               libjsoncpp-dev,
+               libnet-cpp-dev,
+               libsignon-glib-dev,
+               libunity-scopes-dev (>= 0.5.0),
+               pkg-config,
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Standards-Version: 3.9.5
+Homepage: https://launchpad.net/unity-scope-vimeo
+Vcs-Bzr: lp:unity-scope-vimeo
+
+Package: unity-scope-vimeo
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Vimeo scope for Unity
+ This Vimeo scope allows you to search vimeo for videos and also browse
+ your feed within the Unity Dash.
+ .
+ This package provides the vimeo scope.
+

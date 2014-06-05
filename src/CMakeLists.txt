@@ -23,6 +23,15 @@ target_link_libraries(
   ${Boost_LDFLAGS}
 )
 
+set_target_properties(
+  ${SCOPE_NAME}
+  PROPERTIES
+    LINK_FLAGS "-Wl,--no-undefined -Wl,--version-script,${SYMBOL_MAP}"
+    LINK_DEPENDS "${SYMBOL_MAP}"
+    VERSION 1.0.0
+    SOVERSION 1
+)
+
 install(
   TARGETS ${SCOPE_NAME}
   LIBRARY DESTINATION ${SCOPE_INSTALL_DIR}
