@@ -61,49 +61,34 @@ void Query::cancelled() {
 
 void Query::run(sc::SearchReplyProxy const& reply) {
     try {
-
-        sc::Department::SPtr all_depts = sc::Department::create("", query_,
-                "All");
-        for (Channel::Ptr channel : client_.channels()) {
-            cerr << channel->name() << ", " << channel->id() << endl;
-            sc::Department::SPtr dept = sc::Department::create(channel->id(),
-                    query_, channel->name());
-            all_depts->add_subdepartment(dept);
-        }
-        reply->register_departments(all_depts);
-
-//        Filters filters;
-//        OptionSelectorFilter::SPtr filter = OptionSelectorFilter::create("f1",
-//                "Options");
-//        filter->add_option("1", "Option 1");
-//        filter->add_option("2", "Option 2");
-//        filters.push_back(filter);
-//        FilterState filter_state; // TODO: push real state from query obj
-//        if (!reply->push(filters, filter_state)) {
-//            return;  // Query was cancelled
-//        }
-
-        sc::Category::SCPtr cat;
+        string query_string = alg::trim_copy(query_.query_string());
 
         Client::VideoList videos;
 
-        string query = alg::trim_copy(query_.query_string());
+        if (query_string.empty()) {
+            sc::Department::SPtr all_depts = sc::Department::create("", query_,
+                    "My Feed");
+            auto channels = client_.channels();
+            for (Channel::Ptr channel : channels) {
+                sc::Department::SPtr dept = sc::Department::create(
+                        channel->id(), query_, channel->name());
+                all_depts->add_subdepartment(dept);
+            }
+            reply->register_departments(all_depts);
 
-        if (query.empty()) {
-            if (client_.config()->authenticated) {
+            if (!query_.department_id().empty()) {
+                videos = client_.channels_videos(query_.department_id());
+            } else if (client_.config()->authenticated) {
                 videos = client_.feed();
             } else {
                 videos = client_.channels_videos("staffpicks");
             }
-
-            cat = reply->register_category("vimeo-feed", "Feed",
-                    "vimeo-logo-dark",
-                    sc::CategoryRenderer(SEARCH_CATEGORY_TEMPLATE));
         } else {
-            cat = reply->register_category("vimeo", "Vimeo", "vimeo-logo-dark",
-                    sc::CategoryRenderer(SEARCH_CATEGORY_TEMPLATE));
-            videos = client_.videos(query);
+            videos = client_.videos(query_string);
         }
+
+        auto cat = reply->register_category("vimeo", "Vimeo", "vimeo-logo-dark",
+                sc::CategoryRenderer(SEARCH_CATEGORY_TEMPLATE));
 
         for (Video::Ptr video : videos) {
             sc::CategorisedResult res(cat);
