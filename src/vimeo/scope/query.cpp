@@ -51,7 +51,7 @@ const static string SEARCH_CATEGORY_TEMPLATE = ""
         "  }"
         "}";
 
-Query::Query(string const& query, Config::Ptr config) :
+Query::Query(const sc::CannedQuery &query, Config::Ptr config) :
         query_(query), client_(config) {
 }
 
@@ -60,13 +60,34 @@ void Query::cancelled() {
 }
 
 void Query::run(sc::SearchReplyProxy const& reply) {
-    auto cat = reply->register_category("vimeo", "Vimeo", "",
-            sc::CategoryRenderer(SEARCH_CATEGORY_TEMPLATE));
-
     try {
+
+        sc::Department::SPtr all_depts = sc::Department::create("", query_,
+                "All");
+        for (Channel::Ptr channel : client_.channels()) {
+            cerr << channel->name() << ", " << channel->id() << endl;
+            sc::Department::SPtr dept = sc::Department::create(channel->id(),
+                    query_, channel->name());
+            all_depts->add_subdepartment(dept);
+        }
+        reply->register_departments(all_depts);
+
+//        Filters filters;
+//        OptionSelectorFilter::SPtr filter = OptionSelectorFilter::create("f1",
+//                "Options");
+//        filter->add_option("1", "Option 1");
+//        filter->add_option("2", "Option 2");
+//        filters.push_back(filter);
+//        FilterState filter_state; // TODO: push real state from query obj
+//        if (!reply->push(filters, filter_state)) {
+//            return;  // Query was cancelled
+//        }
+
+        sc::Category::SCPtr cat;
+
         Client::VideoList videos;
 
-        string query = alg::trim_copy(query_);
+        string query = alg::trim_copy(query_.query_string());
 
         if (query.empty()) {
             if (client_.config()->authenticated) {
@@ -74,7 +95,13 @@ void Query::run(sc::SearchReplyProxy const& reply) {
             } else {
                 videos = client_.channels_videos("staffpicks");
             }
+
+            cat = reply->register_category("vimeo-feed", "Feed",
+                    "vimeo-logo-dark",
+                    sc::CategoryRenderer(SEARCH_CATEGORY_TEMPLATE));
         } else {
+            cat = reply->register_category("vimeo", "Vimeo", "vimeo-logo-dark",
+                    sc::CategoryRenderer(SEARCH_CATEGORY_TEMPLATE));
             videos = client_.videos(query);
         }
 
@@ -86,7 +113,9 @@ void Query::run(sc::SearchReplyProxy const& reply) {
             res["description"] = video->description();
             res["username"] = video->username();
 
-            reply->push(res);
+            if (!reply->push(res)) {
+                return;
+            }
         }
     } catch (domain_error &e) {
     }
