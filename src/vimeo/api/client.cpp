@@ -104,7 +104,8 @@ Client::VideoList Client::videos(const string &query) {
 
 Client::ChannelList Client::channels() {
     json::Value root;
-    get( { "channels" }, { { "sort", "followers" } }, root);
+    get( { "channels" }, { { "sort", "followers" }, { "filter", "featured" }, {
+            "per_page", "10" } }, root);
     return get_list<Channel>(root);
 }
 
