@@ -68,8 +68,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
         if (query_string.empty()) {
             sc::Department::SPtr all_depts = sc::Department::create("", query_,
                     "My Feed");
-            auto channels = client_.channels();
-            for (Channel::Ptr channel : channels) {
+            for (Channel::Ptr channel : client_.channels()) {
                 sc::Department::SPtr dept = sc::Department::create(
                         channel->id(), query_, channel->name());
                 all_depts->add_subdepartment(dept);
