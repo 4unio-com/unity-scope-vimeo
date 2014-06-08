@@ -46,7 +46,7 @@ QUERY_VIDEOS = {
     'data': [
         {
             'name': 'Query video 1',
-            'link': 'http://vimeo.com/videos/query-1',
+            'link': 'http://vimeo.com/videos/query_1',
             'description': 'Query description 1',
             'user': {'name': 'Query user 1'},
             'pictures': [
@@ -57,9 +57,9 @@ QUERY_VIDEOS = {
         },
         {
             'name': 'Query video 2',
-            'link': 'http://vimeo.com/videos/query-2',
+            'link': 'http://vimeo.com/videos/query_2',
             'description': 'Query description 2',
-            'user': {'name': 'query user 2'},
+            'user': {'name': 'Query user 2'},
             'pictures': [
                 {'link': 'http://images.foo/query2-1.png'},
                 {'link': 'http://images.foo/query2-2.png'},
@@ -67,9 +67,9 @@ QUERY_VIDEOS = {
         },
         {
             'name': 'Query video 3',
-            'link': 'http://vimeo.com/videos/query-3',
+            'link': 'http://vimeo.com/videos/query_3',
             'description': 'Query description 3',
-            'user': {'name': 'query user 3'},
+            'user': {'name': 'Query user 3'},
             'pictures': [
                 {'link': 'http://images.foo/query3-1.png'},
                 {'link': 'http://images.foo/query3-2.png'},
@@ -77,9 +77,9 @@ QUERY_VIDEOS = {
         },
         {
             'name': 'Query video 4',
-            'link': 'http://vimeo.com/videos/query-4',
+            'link': 'http://vimeo.com/videos/query_4',
             'description': 'Query description 4',
-            'user': {'name': 'query user 4'},
+            'user': {'name': 'Query user 4'},
             'pictures': [
                 {'link': 'http://images.foo/query4-1.png'},
                 {'link': 'http://images.foo/query4-2.png'},
