@@ -67,6 +67,49 @@ STAFFPICKS_VIDEOS = {
     ]
 }
 
+APPLE_VIDEOS = {
+    'data': [
+        {
+            'name': 'Apple 1',
+            'link': 'http://vimeo.com/videos/apple_1',
+            'description': 'Apple description 1',
+            'user': {'name': 'apple 1'},
+            'pictures': [
+                {'link': 'http://images.foo/apple1-1.png'},
+                {'link': 'http://images.foo/apple1-2.png'},
+            ],
+        },
+        {
+            'name': 'Apple 2',
+            'link': 'http://vimeo.com/videos/apple_2',
+            'description': 'Apple description 2',
+            'user': {'name': 'apple 2'},
+            'pictures': [
+                {'link': 'http://images.foo/apple2-1.png'},
+                {'link': 'http://images.foo/apple2-2.png'},
+            ],
+        },
+        {
+            'name': 'Apple 3',
+            'link': 'http://vimeo.com/videos/apple_3',
+            'description': 'Apple description 3',
+            'user': {'name': 'apple 3'},
+            'pictures': [
+                {'link': 'http://images.foo/apple3-1.png'},
+                {'link': 'http://images.foo/apple3-2.png'},
+            ],
+        },
+    ]
+}
+
+BANANA_VIDEOS = {
+    'data': []
+}
+
+CHERRY_VIDEOS = {
+    'data': []
+}
+
 class ErrorHandler(tornado.web.RequestHandler):
     def write_error(self, status_code, **kwargs):
         self.write(json.dumps({'error': '%s: %d' % (kwargs["exc_info"][1], status_code)}))
@@ -94,8 +137,14 @@ class ChannelsVideos(ErrorHandler):
     def get(self, channel):
         validate_header(self, 'Authorization', AUTHORIZATION_BEARER)
     
-        if channel == 'staffpicks':
+        if channel == 'staffpicks' or channel == '1':
             self.write(json.dumps(STAFFPICKS_VIDEOS))
+        elif channel == channel == '2':
+            self.write(json.dumps(APPLE_VIDEOS))
+        elif channel == channel == '3':
+            self.write(json.dumps(BANANA_VIDEOS))
+        elif channel == channel == '4':
+            self.write(json.dumps(CHERRY_VIDEOS))
         else:
             raise Exception("Unknown channel '%s'" % channel)
         self.finish()

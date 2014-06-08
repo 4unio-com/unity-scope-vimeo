@@ -44,8 +44,8 @@ class TestVimeoScope: public TypedScopeFixtureScope {
 protected:
     void SetUp() override
     {
-        fake_vimeo_server_ = posix::exec("/usr/bin/python",
-                { FAKE_VIMEO_SERVER }, { }, posix::StandardStream::stdout);
+        fake_vimeo_server_ = posix::exec(FAKE_VIMEO_SERVER, { }, { },
+                posix::StandardStream::stdout);
 
         ASSERT_GT(fake_vimeo_server_.pid(), 0);
         string port;
@@ -75,6 +75,26 @@ TEST_F(TestVimeoScope, empty_search_string) {
             Return(true));
     sc::SearchReplyProxy reply_proxy(&reply, [](sc::SearchReply*) {}); // note: this is a std::shared_ptr with empty deleter
     sc::CannedQuery query("unity-scope-vimeo", "", "");
+    sc::SearchMetadata meta_data("en_EN", "phone");
+    auto search_query = scope->search(query, meta_data);
+    ASSERT_NE(nullptr, search_query);
+    search_query->run(reply_proxy);
+}
+
+TEST_F(TestVimeoScope, apple_department) {
+    const sc::CategoryRenderer renderer;
+    NiceMock<sct::MockSearchReply> reply;
+    EXPECT_CALL(reply, register_departments(_)).Times(1);
+    EXPECT_CALL(reply, register_category("vimeo", "Vimeo", "vimeo-logo-dark", _)).Times(
+            1).WillOnce(
+            Return(
+                    sc::Category::SCPtr(
+                            new sct::Category("vimeo", "Vimeo",
+                                    "vimeo-logo-dark", renderer))));
+    EXPECT_CALL(reply, push(Matcher<sc::CategorisedResult const&>(_))).Times(3).WillRepeatedly(
+            Return(true));
+    sc::SearchReplyProxy reply_proxy(&reply, [](sc::SearchReply*) {}); // note: this is a std::shared_ptr with empty deleter
+    sc::CannedQuery query("unity-scope-vimeo", "", "2");
     sc::SearchMetadata meta_data("en_EN", "phone");
     auto search_query = scope->search(query, meta_data);
     ASSERT_NE(nullptr, search_query);
