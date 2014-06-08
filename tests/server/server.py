@@ -42,6 +42,52 @@ CHANNELS = {
     ]
 }
 
+QUERY_VIDEOS = {
+    'data': [
+        {
+            'name': 'Query video 1',
+            'link': 'http://vimeo.com/videos/query-1',
+            'description': 'Query description 1',
+            'user': {'name': 'Query user 1'},
+            'pictures': [
+                {'link': 'http://images.foo/query1-1.png'},
+                {'link': 'http://images.foo/query1-2.png'},
+                {'link': 'http://images.foo/query1-3.png'},
+            ],
+        },
+        {
+            'name': 'Query video 2',
+            'link': 'http://vimeo.com/videos/query-2',
+            'description': 'Query description 2',
+            'user': {'name': 'query user 2'},
+            'pictures': [
+                {'link': 'http://images.foo/query2-1.png'},
+                {'link': 'http://images.foo/query2-2.png'},
+            ],
+        },
+        {
+            'name': 'Query video 3',
+            'link': 'http://vimeo.com/videos/query-3',
+            'description': 'Query description 3',
+            'user': {'name': 'query user 3'},
+            'pictures': [
+                {'link': 'http://images.foo/query3-1.png'},
+                {'link': 'http://images.foo/query3-2.png'},
+            ],
+        },
+        {
+            'name': 'Query video 4',
+            'link': 'http://vimeo.com/videos/query-4',
+            'description': 'Query description 4',
+            'user': {'name': 'query user 4'},
+            'pictures': [
+                {'link': 'http://images.foo/query4-1.png'},
+                {'link': 'http://images.foo/query4-2.png'},
+            ],
+        },
+    ]
+}
+
 STAFFPICKS_VIDEOS = {
     'data': [
         {
@@ -148,6 +194,18 @@ class ChannelsVideos(ErrorHandler):
         else:
             raise Exception("Unknown channel '%s'" % channel)
         self.finish()
+        
+class Videos(ErrorHandler):
+    def get(self):
+        validate_header(self, 'Authorization', AUTHORIZATION_BEARER)
+        
+        query = self.get_argument('query', '')
+    
+        if query == 'query':
+            self.write(json.dumps(QUERY_VIDEOS))
+        else:
+            raise Exception("Unknown query '%s'" % query)
+        self.finish()
 
 def validate_argument(self, name, expected):
     actual = self.get_argument(name, '')
@@ -164,6 +222,7 @@ def new_app():
         (r"/oauth/authorize/client", AuthlessLogin),
         (r"/channels", Channels),
         (r"/channels/(.*)/videos", ChannelsVideos),
+        (r"/videos", Videos),
     ])
     sockets = tornado.netutil.bind_sockets(0, '127.0.0.1')
     server = tornado.httpserver.HTTPServer(application)

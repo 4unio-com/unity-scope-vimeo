@@ -101,4 +101,23 @@ TEST_F(TestVimeoScope, apple_department) {
     search_query->run(reply_proxy);
 }
 
+TEST_F(TestVimeoScope, non_empty_query) {
+    const sc::CategoryRenderer renderer;
+    NiceMock<sct::MockSearchReply> reply;
+    EXPECT_CALL(reply, register_category("vimeo", "Vimeo", "vimeo-logo-dark", _)).Times(
+            1).WillOnce(
+            Return(
+                    sc::Category::SCPtr(
+                            new sct::Category("vimeo", "Vimeo",
+                                    "vimeo-logo-dark", renderer))));
+    EXPECT_CALL(reply, push(Matcher<sc::CategorisedResult const&>(_))).Times(4).WillRepeatedly(
+            Return(true));
+    sc::SearchReplyProxy reply_proxy(&reply, [](sc::SearchReply*) {}); // note: this is a std::shared_ptr with empty deleter
+    sc::CannedQuery query("unity-scope-vimeo", "query", "");
+    sc::SearchMetadata meta_data("en_EN", "phone");
+    auto search_query = scope->search(query, meta_data);
+    ASSERT_NE(nullptr, search_query);
+    search_query->run(reply_proxy);
+}
+
 } // namespace
