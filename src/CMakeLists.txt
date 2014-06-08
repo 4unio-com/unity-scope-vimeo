@@ -2,8 +2,9 @@
 # Put the ini file in the build directory next to the scope
 # .so file so test tools can find both easily.
 configure_file(
-  "${CMAKE_SOURCE_DIR}/data/${SCOPE_NAME}.ini"
+  "${CMAKE_SOURCE_DIR}/data/${SCOPE_NAME}.ini.in"
   "${CMAKE_CURRENT_BINARY_DIR}/${SCOPE_NAME}.ini"
+  @ONLY
 )
 
 add_library(
@@ -26,8 +27,8 @@ target_link_libraries(
 set_target_properties(
   ${SCOPE_NAME}
   PROPERTIES
-    LINK_FLAGS "-Wl,--no-undefined -Wl,--version-script,${SYMBOL_MAP}"
-    LINK_DEPENDS "${SYMBOL_MAP}"
+#    LINK_FLAGS "-Wl,--no-undefined -Wl,--version-script,${SYMBOL_MAP}"
+#    LINK_DEPENDS "${SYMBOL_MAP}"
     VERSION 1.0.0
     SOVERSION 1
 )

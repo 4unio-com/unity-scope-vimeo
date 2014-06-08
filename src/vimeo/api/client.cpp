@@ -37,6 +37,8 @@ Client::Client(Config::Ptr config) :
 
 void Client::get(const deque<string> &endpoints,
         const map<string, string> &querys, json::Value &root) {
+    cancelled_ = false;
+
     auto client = http::make_client();
 
     http::Request::Configuration configuration;

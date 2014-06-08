@@ -1,0 +1,6 @@
+[ScopeConfig]
+DisplayName = Vimeo
+Description = Search Vimeo for videos and browse channels
+Art = @SCOPES_DATADIR@/unity-scope-vimeo/screenshot.png
+Author = Canonical Ltd.
+Icon = @SCOPES_DATADIR@/unity-scope-vimeo/icon.png

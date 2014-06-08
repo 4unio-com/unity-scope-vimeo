@@ -66,6 +66,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
         Client::VideoList videos;
 
         if (query_string.empty()) {
+
             sc::Department::SPtr all_depts = sc::Department::create("", query_,
                     "My Feed");
             for (Channel::Ptr channel : client_.channels()) {
