@@ -31,9 +31,7 @@ protected:
 };
 
 TEST_F(VimeoFunctionalTests, Foo) {
-//    SimpleOAuth oauth("facebook-im");
-//    SimpleOAuth::AuthData auth_data = oauth.auth_data();
-//    cout << auth_data.access_token << endl;
+    // TODO: Start actual scopes registry and use client API
 }
 
 } // namespace
