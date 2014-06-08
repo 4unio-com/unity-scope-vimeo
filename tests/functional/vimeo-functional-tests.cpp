@@ -30,7 +30,7 @@ class VimeoFunctionalTests: public Test {
 protected:
 };
 
-TEST_F(VimeoFunctionalTests, Foo) {
+TEST_F(VimeoFunctionalTests, Todo) {
     // TODO: Start actual scopes registry and use client API
 }
 
