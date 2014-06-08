@@ -24,6 +24,7 @@
 #include <string>
 #include <unity/scopes/SearchReply.h>
 #include <unity/scopes/SearchReplyProxyFwd.h>
+#include <unity/scopes/Variant.h>
 #include <unity/scopes/testing/Category.h>
 #include <unity/scopes/testing/MockSearchReply.h>
 #include <unity/scopes/testing/TypedScopeFixture.h>
@@ -45,6 +46,10 @@ MATCHER_P2(ResultProp, prop, value, "") {
         *result_listener << "result[" << prop << "] is not set";
     }
     return arg.contains(prop) && arg[prop] == sc::Variant(value);
+}
+
+MATCHER_P(IsDepartment, department, "") {
+    return arg->serialize() == department->serialize();
 }
 
 typedef sct::TypedScopeFixture<Scope> TypedScopeFixtureScope;
@@ -73,7 +78,17 @@ protected:
 TEST_F(TestVimeoScope, empty_search_string) {
     const sc::CategoryRenderer renderer;
     NiceMock<sct::MockSearchReply> reply;
-    EXPECT_CALL(reply, register_departments(_)).Times(1);
+
+    sc::CannedQuery query("unity-scope-vimeo", "", ""); // Searching with empty query and no department
+
+    sc::Department::SPtr departments = sc::Department::create("", query,
+            "My Feed");
+    departments->add_subdepartment(sc::Department::create("1", query, "Staff Picks"));
+    departments->add_subdepartment(sc::Department::create("2", query, "Apple"));
+    departments->add_subdepartment(sc::Department::create("3", query, "Banana"));
+    departments->add_subdepartment(sc::Department::create("4", query, "Cherry"));
+    EXPECT_CALL(reply, register_departments(IsDepartment(departments))).Times(1);
+
     EXPECT_CALL(reply, register_category("vimeo", "Vimeo", "vimeo-logo-dark", _)).Times(1)
             .WillOnce(Return(make_shared<sct::Category>("vimeo", "Vimeo", "vimeo-logo-dark", renderer)));
 
@@ -93,7 +108,6 @@ TEST_F(TestVimeoScope, empty_search_string) {
             Return(true));
 
     sc::SearchReplyProxy reply_proxy(&reply, [](sc::SearchReply*) {}); // note: this is a std::shared_ptr with empty deleter
-    sc::CannedQuery query("unity-scope-vimeo", "", ""); // Searching with empty query and no department
     sc::SearchMetadata meta_data("en_EN", "phone");
     auto search_query = scope->search(query, meta_data);
     ASSERT_NE(nullptr, search_query);
@@ -103,7 +117,17 @@ TEST_F(TestVimeoScope, empty_search_string) {
 TEST_F(TestVimeoScope, apple_department) {
     const sc::CategoryRenderer renderer;
     NiceMock<sct::MockSearchReply> reply;
-    EXPECT_CALL(reply, register_departments(_)).Times(1);
+
+    sc::CannedQuery query("unity-scope-vimeo", "", "2"); // searching department "2" == Apple
+
+    sc::Department::SPtr departments = sc::Department::create("", query,
+                "My Feed");
+    departments->add_subdepartment(sc::Department::create("1", query, "Staff Picks"));
+    departments->add_subdepartment(sc::Department::create("2", query, "Apple"));
+    departments->add_subdepartment(sc::Department::create("3", query, "Banana"));
+    departments->add_subdepartment(sc::Department::create("4", query, "Cherry"));
+    EXPECT_CALL(reply, register_departments(IsDepartment(departments))).Times(1);
+
     EXPECT_CALL(reply, register_category("vimeo", "Vimeo", "vimeo-logo-dark", _)).Times(1)
                 .WillOnce(Return(make_shared<sct::Category>("vimeo", "Vimeo", "vimeo-logo-dark", renderer)));
 
@@ -130,7 +154,6 @@ TEST_F(TestVimeoScope, apple_department) {
             Return(true));
 
     sc::SearchReplyProxy reply_proxy(&reply, [](sc::SearchReply*) {}); // note: this is a std::shared_ptr with empty deleter
-    sc::CannedQuery query("unity-scope-vimeo", "", "2"); // searching department "2" == Apple
     sc::SearchMetadata meta_data("en_EN", "phone");
     auto search_query = scope->search(query, meta_data);
     ASSERT_NE(nullptr, search_query);
@@ -140,6 +163,9 @@ TEST_F(TestVimeoScope, apple_department) {
 TEST_F(TestVimeoScope, non_empty_query) {
     const sc::CategoryRenderer renderer;
     NiceMock<sct::MockSearchReply> reply;
+
+    sc::CannedQuery query("unity-scope-vimeo", "query", ""); // searching with query text
+
     EXPECT_CALL(reply, register_category("vimeo", "Vimeo", "vimeo-logo-dark", _)).Times(1)
                 .WillOnce(Return(make_shared<sct::Category>("vimeo", "Vimeo", "vimeo-logo-dark", renderer)));
 
@@ -173,7 +199,6 @@ TEST_F(TestVimeoScope, non_empty_query) {
             Return(true));
 
     sc::SearchReplyProxy reply_proxy(&reply, [](sc::SearchReply*) {}); // note: this is a std::shared_ptr with empty deleter
-    sc::CannedQuery query("unity-scope-vimeo", "query", "");
     sc::SearchMetadata meta_data("en_EN", "phone");
     auto search_query = scope->search(query, meta_data);
     ASSERT_NE(nullptr, search_query);
