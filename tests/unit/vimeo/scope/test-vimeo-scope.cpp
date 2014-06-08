@@ -61,7 +61,7 @@ protected:
     posix::ChildProcess fake_vimeo_server_ = posix::ChildProcess::invalid();
 };
 
-TEST_F(TestVimeoScope, search_results) {
+TEST_F(TestVimeoScope, empty_search_string) {
     const sc::CategoryRenderer renderer;
     NiceMock<sct::MockSearchReply> reply;
     EXPECT_CALL(reply, register_departments(_)).Times(1);

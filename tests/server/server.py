@@ -16,16 +16,22 @@
 #
 # Authored by: Pete Woods <pete.woods@canonical.com>
 
+import base64
 import json
-
 import tornado.httpserver
 import tornado.ioloop
 import tornado.netutil
 import tornado.web
-
 import sys
 
-ACCESS_TOKEN = {'access_token': 'the_access_token'}
+CLIENT_ID = '6e4cfe81bcf04f5ef8d0d059f353a5eaa9bd6d19'
+CLIENT_SECRET = 'bd23bc02c85163bacf4ab6fe1387c34316d31509'
+
+ACCESS_TOKEN = 'the_access_token'
+ACCESS_TOKEN_REPLY = {'access_token': 'the_access_token'}
+
+AUTHORIZATION_BASIC = 'basic %s' % base64.b64encode('%s:%s' % (CLIENT_ID, CLIENT_SECRET))
+AUTHORIZATION_BEARER = 'bearer %s' % ACCESS_TOKEN
 
 CHANNELS = {
     'data': [
@@ -69,11 +75,9 @@ class AuthlessLogin(ErrorHandler):
     def post(self):
         validate_argument(self, 'grant_type', 'client_credentials')
         validate_argument(self, 'scope', 'public')
-            
-        if not self.request.headers.get('Authorization', ''):
-            raise Exception('No authorization header')
+        validate_header(self, 'Authorization', AUTHORIZATION_BASIC)
         
-        self.write(json.dumps(ACCESS_TOKEN))
+        self.write(json.dumps(ACCESS_TOKEN_REPLY))
         self.finish()
         
 class Channels(ErrorHandler):
@@ -81,21 +85,30 @@ class Channels(ErrorHandler):
         validate_argument(self, 'filter', 'featured')
         validate_argument(self, 'per_page', '10')
         validate_argument(self, 'sort', 'followers')
+        validate_header(self, 'Authorization', AUTHORIZATION_BEARER)
 
         self.write(json.dumps(CHANNELS))
         self.finish()
         
 class ChannelsVideos(ErrorHandler):
     def get(self, channel):
+        validate_header(self, 'Authorization', AUTHORIZATION_BEARER)
+    
         if channel == 'staffpicks':
             self.write(json.dumps(STAFFPICKS_VIDEOS))
         else:
             raise Exception("Unknown channel '%s'" % channel)
         self.finish()
 
-def validate_argument(self, name, value):
-    if self.get_argument(name, '') != value:
-        raise Exception("Argument '%s' != '%s'" % (name, value))
+def validate_argument(self, name, expected):
+    actual = self.get_argument(name, '')
+    if actual != expected:
+        raise Exception("Argument '%s' == '%s' != '%s'" % (name, actual, expected))
+
+def validate_header(self, name, expected):
+    actual = self.request.headers.get(name, '')
+    if actual != expected:
+        raise Exception("Header '%s' == '%s' != '%s'" % (name, actual, expected))
 
 def new_app():
     application = tornado.web.Application([
