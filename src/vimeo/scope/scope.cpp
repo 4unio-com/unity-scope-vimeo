@@ -49,7 +49,6 @@ int Scope::start(string const&, sc::RegistryProxy const&) {
         auth_data = oauth.auth_data();
     } else {
         config_->authenticated = true;
-        // auth_data.access_token = "b59317d7a67960019bd15eda6210d1a3";
     }
 
     config_->access_token = auth_data.access_token;
