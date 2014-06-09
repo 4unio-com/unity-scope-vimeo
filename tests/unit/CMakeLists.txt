@@ -1,13 +1,16 @@
 add_executable(
   ${SCOPE_NAME}-unit-tests
   vimeo/scope/test-vimeo-scope.cpp
+  $<TARGET_OBJECTS:${SCOPE_NAME}-static>
 )
 
 target_link_libraries(
   ${SCOPE_NAME}-unit-tests
-  ${SCOPE_NAME}
+  #${SCOPE_NAME}-static
   ${GTEST_BOTH_LIBRARIES}
   ${GMOCK_LIBRARIES}
+  ${SCOPE_LDFLAGS}
+  ${Boost_LDFLAGS}
 )
 
 add_test(

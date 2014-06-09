@@ -8,6 +8,7 @@ add_definitions(
   -pedantic
   -Wall
   -Wextra
+  -fPIC
 )
 
 include(GNUInstallDirs)

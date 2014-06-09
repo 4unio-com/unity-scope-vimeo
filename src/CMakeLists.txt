@@ -8,7 +8,7 @@ configure_file(
 )
 
 add_library(
-  ${SCOPE_NAME} SHARED
+  ${SCOPE_NAME}-static OBJECT
   vimeo/api/simple-oauth.cpp
   vimeo/api/channel.cpp
   vimeo/api/client.cpp
@@ -16,6 +16,17 @@ add_library(
   vimeo/scope/preview.cpp
   vimeo/scope/query.cpp
   vimeo/scope/scope.cpp
+)
+
+set_target_properties(
+  ${SCOPE_NAME}-static
+  PROPERTIES
+    LINK_FLAGS "-Wl,--export-all-symbols"
+)
+
+add_library(
+  ${SCOPE_NAME} SHARED
+  $<TARGET_OBJECTS:${SCOPE_NAME}-static>
 )
 
 target_link_libraries(
@@ -27,10 +38,8 @@ target_link_libraries(
 set_target_properties(
   ${SCOPE_NAME}
   PROPERTIES
-#    LINK_FLAGS "-Wl,--no-undefined -Wl,--version-script,${SYMBOL_MAP}"
-#    LINK_DEPENDS "${SYMBOL_MAP}"
-    VERSION 1.0.0
-    SOVERSION 1
+    LINK_FLAGS "-Wl,--no-undefined -Wl,--version-script,${SYMBOL_MAP}"
+    LINK_DEPENDS "${SYMBOL_MAP}"
 )
 
 install(

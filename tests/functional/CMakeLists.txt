@@ -6,7 +6,6 @@ add_executable(
 
 target_link_libraries(
   ${SCOPE_NAME}-functional-tests
-  ${SCOPE_NAME}
   ${GTEST_BOTH_LIBRARIES}
   ${GMOCK_LIBRARIES}
 )
