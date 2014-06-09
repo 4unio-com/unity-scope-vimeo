@@ -185,11 +185,11 @@ class ChannelsVideos(ErrorHandler):
     
         if channel == 'staffpicks' or channel == '1':
             self.write(json.dumps(STAFFPICKS_VIDEOS))
-        elif channel == channel == '2':
+        elif channel == '2':
             self.write(json.dumps(APPLE_VIDEOS))
-        elif channel == channel == '3':
+        elif channel == '3':
             self.write(json.dumps(BANANA_VIDEOS))
-        elif channel == channel == '4':
+        elif channel == '4':
             self.write(json.dumps(CHERRY_VIDEOS))
         else:
             raise Exception("Unknown channel '%s'" % channel)
