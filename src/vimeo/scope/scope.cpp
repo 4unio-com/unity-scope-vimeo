@@ -63,14 +63,12 @@ void Scope::stop() {
 
 sc::SearchQueryBase::UPtr Scope::search(sc::CannedQuery const &q,
         sc::SearchMetadata const&) {
-    sc::SearchQueryBase::UPtr query(new Query(q, config_));
-    return query;
+    return sc::SearchQueryBase::UPtr(new Query(q, config_));
 }
 
 sc::PreviewQueryBase::UPtr Scope::preview(sc::Result const& result,
         sc::ActionMetadata const& /*metadata*/) {
-    sc::PreviewQueryBase::UPtr preview(new Preview(result.uri()));
-    return preview;
+    return sc::PreviewQueryBase::UPtr(new Preview(result));
 }
 
 #define EXPORT __attribute__ ((visibility ("default")))

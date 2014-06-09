@@ -21,21 +21,24 @@
 
 #include <unity/scopes/PreviewQueryBase.h>
 
+namespace unity {
+namespace scopes {
+class Result;
+}
+}
+
 namespace vimeo {
 namespace scope {
 
 class Preview: public unity::scopes::PreviewQueryBase {
 public:
-    Preview(std::string const& uri);
+    Preview(const unity::scopes::Result &result);
 
     ~Preview() = default;
 
     void cancelled() override;
 
     void run(unity::scopes::PreviewReplyProxy const& reply) override;
-
-private:
-    std::string uri_;
 };
 
 }

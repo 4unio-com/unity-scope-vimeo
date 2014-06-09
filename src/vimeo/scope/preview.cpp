@@ -21,6 +21,7 @@
 #include <unity/scopes/ColumnLayout.h>
 #include <unity/scopes/PreviewWidget.h>
 #include <unity/scopes/PreviewReply.h>
+#include <unity/scopes/Result.h>
 #include <unity/scopes/VariantBuilder.h>
 
 #include <iostream>
@@ -30,8 +31,7 @@ namespace sc = unity::scopes;
 using namespace std;
 using namespace vimeo::scope;
 
-Preview::Preview(string const& uri) :
-        uri_(uri) {
+Preview::Preview(const sc::Result &) {
 }
 
 void Preview::cancelled() {
