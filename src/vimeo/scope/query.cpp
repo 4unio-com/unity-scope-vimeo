@@ -67,6 +67,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
 
         if (query_string.empty()) {
 
+#ifdef DEPARTMENTS_SUPPORT
             sc::Department::SPtr all_depts = sc::Department::create("", query_,
                     "My Feed");
             for (Channel::Ptr channel : client_.channels()) {
@@ -75,6 +76,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
                 all_depts->add_subdepartment(dept);
             }
             reply->register_departments(all_depts);
+#endif
 
             if (!query_.department_id().empty()) {
                 videos = client_.channels_videos(query_.department_id());
