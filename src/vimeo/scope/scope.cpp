@@ -48,11 +48,13 @@ int Scope::start(string const&, sc::RegistryProxy const&) {
         auth_data = oauth.auth_data();
     }
     if (auth_data.access_token.empty()) {
+        cout << "Vimeo scope is unauthenticated" << endl;
         oauth.unauthenticated(CLIENT_ID, CLIENT_SECRET,
                 config_->apiroot + "/oauth/authorize/client", { { "grant_type",
                         "client_credentials" }, { "scope", "public" } });
         auth_data = oauth.auth_data();
     } else {
+        cerr << "Vimeo scope is authenticated" << endl;
         config_->authenticated = true;
     }
 
