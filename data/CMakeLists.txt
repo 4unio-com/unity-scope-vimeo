@@ -17,6 +17,6 @@ install(
 
 install(
   FILES "icon.png"
-  DESTINATION "${SCOPES_DATADIR}/${SCOPE_NAME}"
+  DESTINATION "${SCOPE_INSTALL_DIR}"
 )
 
