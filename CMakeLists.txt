@@ -45,7 +45,6 @@ include_directories(
 set(SCOPE_NAME unity-scope-vimeo)
 _pkgconfig_invoke(libunity-scopes "SCOPE" "DIR" "" --variable=scopesdir)
 set(SCOPE_INSTALL_DIR "${SCOPE_DIR}/${SCOPE_NAME}")
-set(SCOPES_DATADIR "${CMAKE_INSTALL_FULL_DATADIR}/unity/scopes")
 set(SYMBOL_MAP "${CMAKE_SOURCE_DIR}/data/${SCOPE_NAME}.map")
 
 add_subdirectory(src)
