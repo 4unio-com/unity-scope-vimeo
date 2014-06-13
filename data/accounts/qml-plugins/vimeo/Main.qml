@@ -13,7 +13,7 @@ OAuthMain {
             http.setRequestHeader("Accept", "application/vnd.vimeo.*+json; version=3.0")
             http.setRequestHeader("User-Agent", "unity-scope-vimeo 0.1; (http: //developer.vimeo.com/api/docs)")
             http.onreadystatechange = function() {
-                if (http.readyState === 4){
+                if (http.readyState === 4) {
                     if (http.status == 200) {
                         var response = JSON.parse(http.responseText)
                         account.updateDisplayName(response.name)
