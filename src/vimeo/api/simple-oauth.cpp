@@ -186,7 +186,7 @@ void SimpleOAuth::logout_service() {
 }
 
 void SimpleOAuth::lookup_account_service() {
-    GList *account_services = ag_manager_get_enabled_account_services(
+    GList *account_services = ag_manager_get_account_services(
             manager_.get());
     GList *tmp;
     for (tmp = account_services; tmp != nullptr; tmp = tmp->next) {
@@ -203,6 +203,7 @@ void SimpleOAuth::lookup_account_service() {
     if (account_service_) {
         login_service();
     } else {
+        cerr << "Could not find account service" << endl;
         g_main_loop_quit(main_loop_.get());
     }
 }
