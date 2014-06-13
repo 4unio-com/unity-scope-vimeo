@@ -29,6 +29,9 @@ using namespace std;
 using namespace vimeo::scope;
 using namespace vimeo::api;
 
+static const char* CLIENT_ID = "b6758ff9f929cdb9f45a8477732bdbc4c6a89c7e";
+static const char* CLIENT_SECRET = "a3222f38f799b3b528e29418fe062c02c677a249";
+
 int Scope::start(string const&, sc::RegistryProxy const&) {
     config_ = make_shared<Config>();
 
@@ -40,10 +43,12 @@ int Scope::start(string const&, sc::RegistryProxy const&) {
     config_->accept = "application/vnd.vimeo.*+json; version=3.0";
 
     SimpleOAuth oauth("vimeo");
-    SimpleOAuth::AuthData auth_data = oauth.auth_data();
+    SimpleOAuth::AuthData auth_data;
+    if (getenv("VIMEO_SCOPE_IGNORE_ACCOUNTS") == nullptr) {
+        auth_data = oauth.auth_data();
+    }
     if (auth_data.access_token.empty()) {
-        oauth.unauthenticated("6e4cfe81bcf04f5ef8d0d059f353a5eaa9bd6d19",
-                "bd23bc02c85163bacf4ab6fe1387c34316d31509",
+        oauth.unauthenticated(CLIENT_ID, CLIENT_SECRET,
                 config_->apiroot + "/oauth/authorize/client", { { "grant_type",
                         "client_credentials" }, { "scope", "public" } });
         auth_data = oauth.auth_data();

@@ -68,6 +68,8 @@ protected:
         string apiroot = "http://127.0.0.1:" + port;
         setenv("VIMEO_SCOPE_APIROOT", apiroot.c_str(), true);
 
+        setenv("VIMEO_SCOPE_IGNORE_ACCOUNTS", "true", true);
+
         // Do the parent SetUp
         TypedScopeFixtureScope::SetUp();
     }

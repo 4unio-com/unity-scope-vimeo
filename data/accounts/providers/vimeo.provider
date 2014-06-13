@@ -19,8 +19,8 @@
           <setting name="ResponseType">code</setting>
           <setting name="Display">popup</setting>
           <setting type="as" name="Scope">['public private']</setting>
-          <setting name="ClientId">6e4cfe81bcf04f5ef8d0d059f353a5eaa9bd6d19</setting>
-          <setting name="ClientSecret">bd23bc02c85163bacf4ab6fe1387c34316d31509</setting>
+          <setting name="ClientId">b6758ff9f929cdb9f45a8477732bdbc4c6a89c7e</setting>
+          <setting name="ClientSecret">a3222f38f799b3b528e29418fe062c02c677a249</setting>
           <setting type="as" name="AllowedSchemes">['https','http']</setting>
         </group>
       </group>

@@ -24,8 +24,8 @@ import tornado.netutil
 import tornado.web
 import sys
 
-CLIENT_ID = '6e4cfe81bcf04f5ef8d0d059f353a5eaa9bd6d19'
-CLIENT_SECRET = 'bd23bc02c85163bacf4ab6fe1387c34316d31509'
+CLIENT_ID = 'b6758ff9f929cdb9f45a8477732bdbc4c6a89c7e'
+CLIENT_SECRET = 'a3222f38f799b3b528e29418fe062c02c677a249'
 
 ACCESS_TOKEN = 'the_access_token'
 ACCESS_TOKEN_REPLY = {'access_token': 'the_access_token'}
