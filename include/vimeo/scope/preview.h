@@ -32,7 +32,8 @@ namespace scope {
 
 class Preview: public unity::scopes::PreviewQueryBase {
 public:
-    Preview(const unity::scopes::Result &result);
+    Preview(const unity::scopes::Result &result,
+            const unity::scopes::ActionMetadata &metadata);
 
     ~Preview() = default;
 

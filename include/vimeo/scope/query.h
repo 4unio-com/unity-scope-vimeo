@@ -29,7 +29,8 @@ namespace scope {
 
 class Query: public unity::scopes::SearchQueryBase {
 public:
-    Query(const unity::scopes::CannedQuery &query, vimeo::api::Config::Ptr config);
+    Query(const unity::scopes::CannedQuery &query,
+            const unity::scopes::SearchMetadata &metadata, vimeo::api::Config::Ptr config);
 
     ~Query() = default;
 
@@ -38,8 +39,6 @@ public:
     void run(const unity::scopes::SearchReplyProxy &reply) override;
 
 private:
-    unity::scopes::CannedQuery query_;
-
     vimeo::api::Client client_;
 };
 

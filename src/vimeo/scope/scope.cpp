@@ -32,7 +32,7 @@ using namespace vimeo::api;
 static const char* CLIENT_ID = "b6758ff9f929cdb9f45a8477732bdbc4c6a89c7e";
 static const char* CLIENT_SECRET = "a3222f38f799b3b528e29418fe062c02c677a249";
 
-int Scope::start(string const&, sc::RegistryProxy const&) {
+void Scope::start(string const&, sc::RegistryProxy const&) {
     config_ = make_shared<Config>();
 
     config_->apiroot =
@@ -61,21 +61,19 @@ int Scope::start(string const&, sc::RegistryProxy const&) {
     config_->access_token = auth_data.access_token;
     config_->client_id = auth_data.client_id;
     config_->client_secret = auth_data.client_secret;
-
-    return VERSION;
 }
 
 void Scope::stop() {
 }
 
-sc::SearchQueryBase::UPtr Scope::search(sc::CannedQuery const &q,
-        sc::SearchMetadata const&) {
-    return sc::SearchQueryBase::UPtr(new Query(q, config_));
+sc::SearchQueryBase::UPtr Scope::search(const sc::CannedQuery &query,
+        const sc::SearchMetadata &metadata) {
+    return sc::SearchQueryBase::UPtr(new Query(query, metadata, config_));
 }
 
 sc::PreviewQueryBase::UPtr Scope::preview(sc::Result const& result,
-        sc::ActionMetadata const& /*metadata*/) {
-    return sc::PreviewQueryBase::UPtr(new Preview(result));
+        sc::ActionMetadata const& metadata) {
+    return sc::PreviewQueryBase::UPtr(new Preview(result, metadata));
 }
 
 #define EXPORT __attribute__ ((visibility ("default")))

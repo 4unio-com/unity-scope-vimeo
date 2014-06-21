@@ -31,7 +31,8 @@ namespace sc = unity::scopes;
 using namespace std;
 using namespace vimeo::scope;
 
-Preview::Preview(const sc::Result &) {
+Preview::Preview(const sc::Result &result, const sc::ActionMetadata &metadata) :
+        sc::PreviewQueryBase(result, metadata) {
 }
 
 void Preview::cancelled() {

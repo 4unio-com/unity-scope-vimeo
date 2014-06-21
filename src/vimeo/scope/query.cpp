@@ -51,8 +51,9 @@ const static string SEARCH_CATEGORY_TEMPLATE = ""
         "  }"
         "}";
 
-Query::Query(const sc::CannedQuery &query, Config::Ptr config) :
-        query_(query), client_(config) {
+Query::Query(const sc::CannedQuery &query, const sc::SearchMetadata &metadata,
+        Config::Ptr config) :
+        sc::SearchQueryBase(query, metadata), client_(config) {
 }
 
 void Query::cancelled() {
@@ -61,23 +62,25 @@ void Query::cancelled() {
 
 void Query::run(sc::SearchReplyProxy const& reply) {
     try {
-        string query_string = alg::trim_copy(query_.query_string());
+        const sc::CannedQuery &query(sc::SearchQueryBase::query());
+
+        string query_string = alg::trim_copy(query.query_string());
 
         Client::VideoList videos;
 
         if (query_string.empty()) {
 
-            sc::Department::SPtr all_depts = sc::Department::create("", query_,
+            sc::Department::SPtr all_depts = sc::Department::create("", query,
                     "My Feed");
             for (Channel::Ptr channel : client_.channels()) {
                 sc::Department::SPtr dept = sc::Department::create(
-                        channel->id(), query_, channel->name());
+                        channel->id(), query, channel->name());
                 all_depts->add_subdepartment(dept);
             }
             reply->register_departments(all_depts);
 
-            if (!query_.department_id().empty()) {
-                videos = client_.channels_videos(query_.department_id());
+            if (!query.department_id().empty()) {
+                videos = client_.channels_videos(query.department_id());
             } else if (client_.config()->authenticated) {
                 videos = client_.feed();
             } else {
