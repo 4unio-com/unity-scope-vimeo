@@ -83,7 +83,6 @@ TEST_F(TestVimeoScope, empty_search_string) {
 
     sc::CannedQuery query("unity-scope-vimeo", "", ""); // Searching with empty query and no department
 
-#ifdef DEPARTMENTS_SUPPORT
     sc::Department::SPtr departments = sc::Department::create("", query,
             "My Feed");
     departments->add_subdepartment(sc::Department::create("1", query, "Staff Picks"));
@@ -91,7 +90,6 @@ TEST_F(TestVimeoScope, empty_search_string) {
     departments->add_subdepartment(sc::Department::create("3", query, "Banana"));
     departments->add_subdepartment(sc::Department::create("4", query, "Cherry"));
     EXPECT_CALL(reply, register_departments(IsDepartment(departments))).Times(1);
-#endif
 
     EXPECT_CALL(reply, register_category("vimeo", "Vimeo", "vimeo-logo-dark", _)).Times(1)
             .WillOnce(Return(make_shared<sct::Category>("vimeo", "Vimeo", "vimeo-logo-dark", renderer)));
@@ -124,7 +122,6 @@ TEST_F(TestVimeoScope, apple_department) {
 
     sc::CannedQuery query("unity-scope-vimeo", "", "2"); // searching department "2" == Apple
 
-#ifdef DEPARTMENTS_SUPPORT
     sc::Department::SPtr departments = sc::Department::create("", query,
                 "My Feed");
     departments->add_subdepartment(sc::Department::create("1", query, "Staff Picks"));
@@ -132,7 +129,6 @@ TEST_F(TestVimeoScope, apple_department) {
     departments->add_subdepartment(sc::Department::create("3", query, "Banana"));
     departments->add_subdepartment(sc::Department::create("4", query, "Cherry"));
     EXPECT_CALL(reply, register_departments(IsDepartment(departments))).Times(1);
-#endif
 
     EXPECT_CALL(reply, register_category("vimeo", "Vimeo", "vimeo-logo-dark", _)).Times(1)
                 .WillOnce(Return(make_shared<sct::Category>("vimeo", "Vimeo", "vimeo-logo-dark", renderer)));

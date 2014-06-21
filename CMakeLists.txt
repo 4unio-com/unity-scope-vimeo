@@ -25,16 +25,12 @@ pkg_check_modules(
   gio-unix-2.0
   libaccounts-glib
   libsignon-glib
-  libunity-scopes>=0.4.8
+  libunity-scopes>=0.5.0
   jsoncpp
   net-cpp
   process-cpp
   REQUIRED
 )
-
-if(NOT (SCOPE_libunity-scopes_VERSION VERSION_LESS 0.5.0))
-  add_definitions(-DDEPARTMENTS_SUPPORT=1)
-endif()
 
 include_directories(
   "${CMAKE_SOURCE_DIR}/include"
