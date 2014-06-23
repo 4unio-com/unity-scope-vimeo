@@ -16,7 +16,11 @@ install(
 )
 
 install(
-  FILES "icon.png" "screenshot.jpg"
-  DESTINATION "${SCOPE_INSTALL_DIR}"
+  FILES
+    "icon.png"
+    "logo.png"
+    "screenshot.jpg"
+  DESTINATION
+    "${SCOPE_INSTALL_DIR}"
 )
 
