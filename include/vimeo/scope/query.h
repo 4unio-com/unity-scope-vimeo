@@ -39,6 +39,8 @@ public:
     void run(const unity::scopes::SearchReplyProxy &reply) override;
 
 private:
+    void add_login_nag(const unity::scopes::SearchReplyProxy &reply);
+
     vimeo::api::Client client_;
 };
 

@@ -33,23 +33,42 @@ using namespace std;
 using namespace vimeo::api;
 using namespace vimeo::scope;
 
-const static string SEARCH_CATEGORY_TEMPLATE = ""
-        "{"
-        "  \"schema-version\": 1,"
-        "  \"template\": {"
-        "    \"category-layout\": \"grid\","
-        "    \"card-size\": \"large\","
-        "    \"overlay\": true"
-        "  },"
-        "  \"components\": {"
-        "    \"title\": \"title\","
-        "    \"art\" : {"
-        "      \"field\": \"art\","
-        "      \"aspect-ratio\": 2.0"
-        "    },"
-        "    \"subtitle\": \"username\""
-        "  }"
-        "}";
+const static string SEARCH_CATEGORY_TEMPLATE = R"(
+{
+  "schema-version": 1,
+  "template": {
+    "category-layout": "grid",
+    "card-size": "large",
+    "overlay": true
+  },
+  "components": {
+    "title": "title",
+    "art" : {
+      "field": "art",
+      "aspect-ratio": 2.0
+    },
+    "subtitle": "username"
+  }
+}
+)";
+
+const static string SEARCH_CATEGORY_LOGIN_NAG = R"(
+{
+  "schema-version": 1,
+  "template": {
+    "category-layout": "grid",
+    "card-size": "large",
+    "card-background": "color:///#DD4814"
+  },
+  "components": {
+    "title": "title",
+    "background": "background",
+    "art" : {
+      "aspect-ratio": 100.0
+    }
+  }
+}
+)";
 
 Query::Query(const sc::CannedQuery &query, const sc::SearchMetadata &metadata,
         Config::Ptr config) :
@@ -58,6 +77,16 @@ Query::Query(const sc::CannedQuery &query, const sc::SearchMetadata &metadata,
 
 void Query::cancelled() {
     client_.cancel();
+}
+
+void Query::add_login_nag(const sc::SearchReplyProxy &reply) {
+    sc::CategoryRenderer rdr(SEARCH_CATEGORY_LOGIN_NAG);
+    auto cat = reply->register_category("vimeo_login_nag", "", "", rdr);
+
+    sc::CategorisedResult res(cat);
+    res.set_title("Log-in to Vimeo");
+    res.set_uri("settings:///system/online-accounts");
+    reply->push(res);
 }
 
 void Query::run(sc::SearchReplyProxy const& reply) {
@@ -105,6 +134,11 @@ void Query::run(sc::SearchReplyProxy const& reply) {
                 return;
             }
         }
+
+        if (!client_.config()->authenticated) {
+            add_login_nag(reply);
+        }
     } catch (domain_error &e) {
     }
 }
+
