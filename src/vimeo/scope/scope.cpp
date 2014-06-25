@@ -42,7 +42,10 @@ void Scope::anonymous_login(SimpleOAuth &oauth,
             / ".cache" / "unity-scope-vimeo";
     filesystem::path saved_token_path = saved_token_dir
             / "anonymous_auth_token";
-    if (filesystem::exists(saved_token_path)) {
+
+    bool save_auth_token = getenv("VIMEO_SCOPE_IGNORE_ACCOUNTS") == nullptr;
+
+    if (filesystem::exists(saved_token_path) && save_auth_token) {
         ifstream in(saved_token_path.native(), ios::in | ios::binary);
         if (in) {
             ostringstream contents;
@@ -50,19 +53,21 @@ void Scope::anonymous_login(SimpleOAuth &oauth,
             in.close();
             auth_data.access_token = contents.str();
         }
-        cout << "  re-using saved auth_token" << endl;
+        cerr << "  re-using saved auth_token" << endl;
     } else {
         oauth.unauthenticated(CLIENT_ID, CLIENT_SECRET,
                 config_->apiroot + "/oauth/authorize/client", { { "grant_type",
                         "client_credentials" }, { "scope", "public" } });
         auth_data = oauth.auth_data();
-        filesystem::create_directories(saved_token_dir);
-        ofstream out(saved_token_path.native(), ios::out | ios::binary);
-        if (out) {
-            out << auth_data.access_token;
-            out.close();
+        if (save_auth_token) {
+            filesystem::create_directories(saved_token_dir);
+            ofstream out(saved_token_path.native(), ios::out | ios::binary);
+            if (out) {
+                out << auth_data.access_token;
+                out.close();
+            }
         }
-        cout << "  new auth_token" << endl;
+        cerr << "  new auth_token" << endl;
     }
 }
 
@@ -82,7 +87,7 @@ void Scope::start(string const&, sc::RegistryProxy const&) {
         auth_data = oauth.auth_data();
     }
     if (auth_data.access_token.empty()) {
-        cout << "Vimeo scope is unauthenticated" << endl;
+        cerr << "Vimeo scope is unauthenticated" << endl;
         anonymous_login(oauth, auth_data);
     } else {
         cerr << "Vimeo scope is authenticated" << endl;

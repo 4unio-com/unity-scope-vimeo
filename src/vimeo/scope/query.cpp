@@ -135,9 +135,10 @@ void Query::run(sc::SearchReplyProxy const& reply) {
             }
         }
 
-        if (!client_.config()->authenticated) {
-            add_login_nag(reply);
-        }
+//        FIXME Add this back when direct activation can be controlled
+//        if (!client_.config()->authenticated) {
+//            add_login_nag(reply);
+//        }
     } catch (domain_error &e) {
     }
 }
