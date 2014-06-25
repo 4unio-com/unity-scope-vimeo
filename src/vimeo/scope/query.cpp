@@ -119,7 +119,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
             videos = client_.videos(query_string);
         }
 
-        auto cat = reply->register_category("vimeo", "Vimeo", "vimeo-logo-dark",
+        auto cat = reply->register_category("vimeo", "Vimeo", "",
                 sc::CategoryRenderer(SEARCH_CATEGORY_TEMPLATE));
 
         for (Video::Ptr video : videos) {
