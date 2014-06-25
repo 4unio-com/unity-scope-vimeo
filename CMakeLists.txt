@@ -16,6 +16,9 @@ find_package(PkgConfig)
 
 find_package(
   Boost
+  COMPONENTS
+    filesystem
+    system
   REQUIRED
 )
 

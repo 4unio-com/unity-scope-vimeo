@@ -20,6 +20,7 @@
 #define VIMEO_SCOPE_SCOPE_H_
 
 #include <vimeo/api/config.h>
+#include <vimeo/api/simple-oauth.h>
 
 #include <unity/scopes/ScopeBase.h>
 #include <unity/scopes/QueryBase.h>
@@ -28,6 +29,7 @@
 #include <unity/scopes/PreviewQueryBase.h>
 
 namespace vimeo {
+
 namespace scope {
 
 class Scope: public unity::scopes::ScopeBase {
@@ -45,6 +47,9 @@ public:
 
 protected:
     vimeo::api::Config::Ptr config_;
+
+    void anonymous_login(vimeo::api::SimpleOAuth &oauth,
+            vimeo::api::SimpleOAuth::AuthData &auth_data);
 };
 
 }
