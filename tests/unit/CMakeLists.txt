@@ -6,7 +6,6 @@ add_executable(
 
 target_link_libraries(
   ${SCOPE_NAME}-unit-tests
-  #${SCOPE_NAME}-static
   ${GTEST_BOTH_LIBRARIES}
   ${GMOCK_LIBRARIES}
   ${SCOPE_LDFLAGS}
