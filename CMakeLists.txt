@@ -50,18 +50,27 @@ include_directories(
   ${SCOPE_INCLUDE_DIRS}
 )
 
-set(SCOPE_NAME unity-scope-vimeo)
-_pkgconfig_invoke(libunity-scopes "SCOPE" "DIR" "" --variable=scopesdir)
-set(SCOPE_INSTALL_DIR "${SCOPE_DIR}/${SCOPE_NAME}")
+set(SCOPE_NAME "com.ubuntu.vimeo")
+set(SCOPE_INSTALL_NAME "${SCOPE_NAME}_vimeo")
 set(SYMBOL_MAP "${CMAKE_SOURCE_DIR}/data/${SCOPE_NAME}.map")
+ 
+if(CLICK_MODE)
+  set(SCOPE_INSTALL_DIR "click/vimeo")
+  add_subdirectory(click)
+else()
+  _pkgconfig_invoke(libunity-scopes "SCOPE" "DIR" "" --variable=scopesdir)
+  set(SCOPE_INSTALL_DIR "${SCOPE_DIR}/${SCOPE_NAME}")
+endif()
 
 add_subdirectory(src)
 add_subdirectory(data)
-enable_testing()
-add_subdirectory(tests)
 
-add_custom_target(
+if(NOT CLICK_MODE)
+  enable_testing()
+  add_subdirectory(tests)
+  add_custom_target(
         check
         ${CMAKE_CTEST_COMMAND} --force-new-ctest-process --output-on-failure
-)
+  )
+endif()
 

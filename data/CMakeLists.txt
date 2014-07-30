@@ -1,19 +1,21 @@
 
 configure_file(
   "${SCOPE_NAME}.ini.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/${SCOPE_NAME}.ini"
+  "${CMAKE_CURRENT_BINARY_DIR}/${SCOPE_INSTALL_NAME}.ini"
   @ONLY
 )
 
 install(
-  FILES "${CMAKE_CURRENT_BINARY_DIR}/${SCOPE_NAME}.ini"
+  FILES "${CMAKE_CURRENT_BINARY_DIR}/${SCOPE_INSTALL_NAME}.ini"
   DESTINATION ${SCOPE_INSTALL_DIR}
 )
 
-install(
-  DIRECTORY "accounts"
-  DESTINATION "share"
-)
+if(NOT CLICK_MODE)
+  install(
+    DIRECTORY "accounts"
+    DESTINATION "share"
+  )
+endif()
 
 install(
   FILES

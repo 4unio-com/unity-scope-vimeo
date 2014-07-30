@@ -3,7 +3,7 @@
 # .so file so test tools can find both easily.
 configure_file(
   "${CMAKE_SOURCE_DIR}/data/${SCOPE_NAME}.ini.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/${SCOPE_NAME}.ini"
+  "${CMAKE_CURRENT_BINARY_DIR}/${SCOPE_INSTALL_NAME}.ini"
   @ONLY
 )
 configure_file(
@@ -12,6 +12,7 @@ configure_file(
   @ONLY
 )
 
+add_definitions(-DSCOPE_NAME="${SCOPE_NAME}")
 
 add_library(
   ${SCOPE_NAME}-static OBJECT
@@ -46,6 +47,7 @@ set_target_properties(
   PROPERTIES
     LINK_FLAGS "-Wl,--no-undefined -Wl,--version-script,${SYMBOL_MAP}"
     LINK_DEPENDS "${SYMBOL_MAP}"
+    OUTPUT_NAME ${SCOPE_INSTALL_NAME}
 )
 
 install(

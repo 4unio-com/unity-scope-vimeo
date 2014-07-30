@@ -39,7 +39,7 @@ static const char* CLIENT_SECRET = "a3222f38f799b3b528e29418fe062c02c677a249";
 void Scope::anonymous_login(SimpleOAuth &oauth,
         SimpleOAuth::AuthData& auth_data) {
     filesystem::path saved_token_dir = filesystem::path(getenv("HOME"))
-            / ".cache" / "unity-scope-vimeo";
+            / ".local" / "share" / "unity-scopes" / "leaf-net" / SCOPE_NAME;
     filesystem::path saved_token_path = saved_token_dir
             / "anonymous_auth_token";
 
