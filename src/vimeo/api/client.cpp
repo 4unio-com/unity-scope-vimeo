@@ -35,29 +35,15 @@ Client::Client(Config::Ptr config) :
         config_(config), cancelled_(false) {
 }
 
-void Client::get(const deque<string> &endpoints,
-        const map<string, string> &querys, json::Value &root) {
+void Client::get(const net::Uri::Path &path,
+        const net::Uri::QueryParameters &parameters, json::Value &root) {
     cancelled_ = false;
 
     auto client = http::make_client();
 
     http::Request::Configuration configuration;
-    configuration.uri = config_->apiroot;
-    for (const string &endpoint : endpoints) {
-        configuration.uri.append("/" + endpoint);
-    }
-    bool first = true;
-    for (auto it : querys) {
-        if (first) {
-            configuration.uri.append("?");
-            first = false;
-        } else {
-            configuration.uri.append("&");
-        }
-        configuration.uri.append(client->url_escape(it.first));
-        configuration.uri.append("=");
-        configuration.uri.append(client->url_escape(it.second));
-    }
+    net::Uri uri = net::make_uri(config_->apiroot, path, parameters);
+    configuration.uri = client->uri_to_string(uri);
 
     if (!config_->access_token.empty()) {
         configuration.header.add("Authorization",

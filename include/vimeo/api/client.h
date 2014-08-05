@@ -28,6 +28,7 @@
 #include <map>
 #include <string>
 #include <core/net/http/request.h>
+#include <core/net/uri.h>
 
 namespace Json {
 class Value;
@@ -59,8 +60,8 @@ public:
     virtual Config::Ptr config();
 
 protected:
-    void get(const std::deque<std::string> &endpoint,
-            const std::map<std::string, std::string> &querys,
+    void get(const core::net::Uri::Path &path,
+            const core::net::Uri::QueryParameters &parameters,
             Json::Value &root);
 
     core::net::http::Request::Progress::Next progress_report(

@@ -37,9 +37,9 @@ pkg_check_modules(
   gio-unix-2.0
   libaccounts-glib
   libsignon-glib
-  libunity-scopes>=0.5.0
+  libunity-scopes>=0.6.0
   jsoncpp
-  net-cpp
+  net-cpp>=1.1.0
   process-cpp
   REQUIRED
 )
@@ -50,7 +50,7 @@ include_directories(
   ${SCOPE_INCLUDE_DIRS}
 )
 
-set(SCOPE_NAME "com.ubuntu.vimeo")
+set(SCOPE_NAME "com.ubuntu.scopes.vimeo")
 set(SCOPE_INSTALL_NAME "${SCOPE_NAME}_vimeo")
 set(SYMBOL_MAP "${CMAKE_SOURCE_DIR}/data/${SCOPE_NAME}.map")
  

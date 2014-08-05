@@ -71,7 +71,7 @@ void Scope::anonymous_login(SimpleOAuth &oauth,
     }
 }
 
-void Scope::start(string const&, sc::RegistryProxy const&) {
+void Scope::start(string const&) {
     config_ = make_shared<Config>();
 
     config_->apiroot =
