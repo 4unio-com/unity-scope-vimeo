@@ -8,7 +8,8 @@
             "apparmor": "apparmor.json",
             "account-provider": "vimeo.provider",
             "account-application": "vimeo.application",
-            "account-service": "vimeo.service"
+            "account-service": "vimeo.service",
+            "account-qml-plugin": "Main.qml"
         }
     },
     "icon": "icon",

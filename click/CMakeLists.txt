@@ -23,5 +23,6 @@ install(
     "${CMAKE_CURRENT_BINARY_DIR}/vimeo.provider"
     "${CMAKE_CURRENT_BINARY_DIR}/vimeo.service"
     "${CMAKE_CURRENT_BINARY_DIR}/vimeo.application"
+    "Main.qml"
   DESTINATION ${CMAKE_INSTALL_PREFIX}
 )
