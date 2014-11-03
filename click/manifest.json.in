@@ -6,7 +6,7 @@
         "vimeo": {
             "scope": "vimeo",
             "apparmor": "apparmor.json",
-            "account-application": "vimeo.provider",
+            "account-provider": "vimeo.provider",
             "account-application": "vimeo.application",
             "account-service": "vimeo.service"
         }
