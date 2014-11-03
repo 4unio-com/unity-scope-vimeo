@@ -82,7 +82,7 @@ TEST_F(TestVimeoScope, empty_search_string) {
     const sc::CategoryRenderer renderer;
     NiceMock<sct::MockSearchReply> reply;
 
-    sc::CannedQuery query("unity-scope-vimeo", "", ""); // Searching with empty query and no department
+    sc::CannedQuery query(SCOPE_NAME, "", ""); // Searching with empty query and no department
 
     sc::Department::SPtr departments = sc::Department::create("", query,
             "My Feed");
@@ -121,7 +121,7 @@ TEST_F(TestVimeoScope, apple_department) {
     const sc::CategoryRenderer renderer;
     NiceMock<sct::MockSearchReply> reply;
 
-    sc::CannedQuery query("unity-scope-vimeo", "", "2"); // searching department "2" == Apple
+    sc::CannedQuery query(SCOPE_NAME, "", "2"); // searching department "2" == Apple
 
     sc::Department::SPtr departments = sc::Department::create("", query,
                 "My Feed");
@@ -167,7 +167,7 @@ TEST_F(TestVimeoScope, non_empty_query) {
     const sc::CategoryRenderer renderer;
     NiceMock<sct::MockSearchReply> reply;
 
-    sc::CannedQuery query("unity-scope-vimeo", "query", ""); // searching with query text
+    sc::CannedQuery query(SCOPE_NAME, "query", ""); // searching with query text
 
     EXPECT_CALL(reply, register_category("vimeo", "Vimeo", "", _)).Times(1)
                 .WillOnce(Return(make_shared<sct::Category>("vimeo", "Vimeo", "", renderer)));
