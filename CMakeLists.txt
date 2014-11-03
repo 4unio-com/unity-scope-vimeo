@@ -4,12 +4,12 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 
 # We require g++ 4.9, to avoid ABI breakage with earlier version.
 # Note that this must match what is specifed in debian/control.
-set(cxx_version_required 4.9)
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    if (NOT CMAKE_CXX_COMPILER_VERSION MATCHES "^${cxx_version_required}")
-        message(FATAL_ERROR "g++ version must be ${cxx_version_required}!")
-    endif()
-endif()
+#set(cxx_version_required 4.9)
+#if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+#    if (NOT CMAKE_CXX_COMPILER_VERSION MATCHES "^${cxx_version_required}")
+#        message(FATAL_ERROR "g++ version must be ${cxx_version_required}!")
+#    endif()
+#endif()
 
 add_definitions(
   -fno-permissive
@@ -33,11 +33,7 @@ find_package(
 
 pkg_check_modules(
   SCOPE
-  glib-2.0
-  gio-unix-2.0
-  libaccounts-glib
-  libsignon-glib
-  libunity-scopes>=0.6.0
+  libunity-scopes>=0.6.7
   jsoncpp
   net-cpp>=1.1.0
   process-cpp
@@ -50,12 +46,18 @@ include_directories(
   ${SCOPE_INCLUDE_DIRS}
 )
 
+set(SCOPE_VERSION "1.0.0")
 set(SCOPE_NAME "com.ubuntu.scopes.vimeo")
 set(SCOPE_INSTALL_NAME "${SCOPE_NAME}_vimeo")
 set(SYMBOL_MAP "${CMAKE_SOURCE_DIR}/data/${SCOPE_NAME}.map")
- 
+set(GETTEXT_PACKAGE "unity-scope-vimeo")
+
+add_definitions(-DGETTEXT_PACKAGE="${GETTEXT_PACKAGE}")
+add_definitions(-DSCOPE_NAME="${SCOPE_NAME}")
+add_definitions(-DSCOPE_INSTALL_NAME="${SCOPE_INSTALL_NAME}")
+
 if(CLICK_MODE)
-  set(SCOPE_INSTALL_DIR "click/vimeo")
+  set(SCOPE_INSTALL_DIR "vimeo")
   add_subdirectory(click)
 else()
   _pkgconfig_invoke(libunity-scopes "SCOPE" "DIR" "" --variable=scopesdir)

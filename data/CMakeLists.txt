@@ -10,13 +10,6 @@ install(
   DESTINATION ${SCOPE_INSTALL_DIR}
 )
 
-if(NOT CLICK_MODE)
-  install(
-    DIRECTORY "accounts"
-    DESTINATION "share"
-  )
-endif()
-
 install(
   FILES
     "icon.png"

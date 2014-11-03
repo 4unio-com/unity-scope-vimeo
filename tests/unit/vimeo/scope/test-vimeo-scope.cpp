@@ -71,6 +71,7 @@ protected:
         setenv("VIMEO_SCOPE_IGNORE_ACCOUNTS", "true", true);
 
         // Do the parent SetUp
+        TypedScopeFixture::set_scope_directory(TEST_SCOPE_DIRECTORY);
         TypedScopeFixtureScope::SetUp();
     }
 

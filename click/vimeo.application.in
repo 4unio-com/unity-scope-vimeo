@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application id="@SCOPE_INSTALL_NAME@">
+  <description>Vimeo</description>
+  <desktop-entry>@SCOPE_INSTALL_NAME@.desktop</desktop-entry>
+  <services>
+    <service id="@SCOPE_INSTALL_NAME@">
+      <description>Watch your favorite Vimeo videos</description>
+    </service>
+  </services>
+</application>

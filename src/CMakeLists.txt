@@ -10,15 +10,14 @@ configure_file(
   "${CMAKE_SOURCE_DIR}/data/logo.png"
   "${CMAKE_CURRENT_BINARY_DIR}/logo.png"
   @ONLY
+  COPYONLY
 )
-
-add_definitions(-DSCOPE_NAME="${SCOPE_NAME}")
 
 add_library(
   ${SCOPE_NAME}-static OBJECT
-  vimeo/api/simple-oauth.cpp
   vimeo/api/channel.cpp
   vimeo/api/client.cpp
+  vimeo/api/login.cpp
   vimeo/api/video.cpp
   vimeo/scope/preview.cpp
   vimeo/scope/query.cpp

@@ -16,6 +16,7 @@
  * Author: Pete Woods <pete.woods@canonical.com>
  */
 
+#include <vimeo/api/login.h>
 #include <vimeo/scope/scope.h>
 #include <vimeo/scope/query.h>
 #include <vimeo/scope/preview.h>
@@ -36,8 +37,7 @@ using namespace vimeo::api;
 static const char* CLIENT_ID = "b6758ff9f929cdb9f45a8477732bdbc4c6a89c7e";
 static const char* CLIENT_SECRET = "a3222f38f799b3b528e29418fe062c02c677a249";
 
-void Scope::anonymous_login(SimpleOAuth &oauth,
-        SimpleOAuth::AuthData& auth_data) {
+void Scope::anonymous_login() {
     filesystem::path saved_token_dir = filesystem::path(getenv("HOME"))
             / ".local" / "share" / "unity-scopes" / "leaf-net" / SCOPE_NAME;
     filesystem::path saved_token_path = saved_token_dir
@@ -45,25 +45,26 @@ void Scope::anonymous_login(SimpleOAuth &oauth,
 
     bool save_auth_token = getenv("VIMEO_SCOPE_IGNORE_ACCOUNTS") == nullptr;
 
+    config_->client_id = CLIENT_ID;
+    config_->client_secret = CLIENT_SECRET;
+
     if (filesystem::exists(saved_token_path) && save_auth_token) {
         ifstream in(saved_token_path.native(), ios::in | ios::binary);
         if (in) {
             ostringstream contents;
             contents << in.rdbuf();
             in.close();
-            auth_data.access_token = contents.str();
+            config_->access_token = contents.str();
         }
         cerr << "  re-using saved auth_token" << endl;
     } else {
-        oauth.unauthenticated(CLIENT_ID, CLIENT_SECRET,
-                config_->apiroot + "/oauth/authorize/client", { { "grant_type",
-                        "client_credentials" }, { "scope", "public" } });
-        auth_data = oauth.auth_data();
+        config_->access_token = unauthenticated(CLIENT_ID, CLIENT_SECRET,
+                config_->apiroot);
         if (save_auth_token) {
             filesystem::create_directories(saved_token_dir);
             ofstream out(saved_token_path.native(), ios::out | ios::binary);
             if (out) {
-                out << auth_data.access_token;
+                out << config_->access_token;
                 out.close();
             }
         }
@@ -71,32 +72,74 @@ void Scope::anonymous_login(SimpleOAuth &oauth,
     }
 }
 
-void Scope::start(string const&) {
-    config_ = make_shared<Config>();
+void Scope::service_update(sc::OnlineAccountClient::ServiceStatus const&)
+{
+    update_config();
+}
 
-    config_->apiroot =
-            getenv("VIMEO_SCOPE_APIROOT") ?
-                    getenv("VIMEO_SCOPE_APIROOT") : "https://api.vimeo.com";
-    config_->user_agent =
-            "unity-scope-vimeo 0.1; (http: //developer.vimeo.com/api/docs)";
-    config_->accept = "application/vnd.vimeo.*+json; version=3.0";
+void Scope::update_config()
+{
+    std::lock_guard<std::mutex> lock(config_mutex_);
+    init_config();
 
-    SimpleOAuth oauth("vimeo");
-    SimpleOAuth::AuthData auth_data;
-    if (getenv("VIMEO_SCOPE_IGNORE_ACCOUNTS") == nullptr) {
-        auth_data = oauth.auth_data();
+    for (auto const& status : oa_client_->get_service_statuses())
+    {
+        if (status.service_authenticated)
+        {
+            config_->authenticated = true;
+            config_->access_token = status.access_token;
+            config_->client_id = status.client_id;
+            config_->client_secret = status.client_secret;
+            break;
+        }
     }
-    if (auth_data.access_token.empty()) {
+
+    if (!config_->authenticated) {
         cerr << "Vimeo scope is unauthenticated" << endl;
-        anonymous_login(oauth, auth_data);
+        anonymous_login();
     } else {
         cerr << "Vimeo scope is authenticated" << endl;
-        config_->authenticated = true;
     }
 
-    config_->access_token = auth_data.access_token;
-    config_->client_id = auth_data.client_id;
-    config_->client_secret = auth_data.client_secret;
+    config_cond_.notify_all();
+}
+
+void Scope::init_config()
+{
+    config_ = make_shared<Config>();
+    if (getenv("VIMEO_SCOPE_APIROOT")) {
+        config_->apiroot = getenv("VIMEO_SCOPE_APIROOT");
+    }
+}
+
+void Scope::start(string const&) {
+    setlocale(LC_ALL, "");
+    string translation_directory = ScopeBase::scope_directory()
+            + "/../share/locale/";
+    bindtextdomain(GETTEXT_PACKAGE, translation_directory.c_str());
+
+    if (getenv("VIMEO_SCOPE_IGNORE_ACCOUNTS") == nullptr) {
+        oa_client_.reset(
+                new sc::OnlineAccountClient(SCOPE_INSTALL_NAME,
+                        "sharing", "vimeo"));
+        oa_client_->set_service_update_callback(
+                std::bind(&Scope::service_update, this, std::placeholders::_1));
+
+        ///! TODO: We should only be waiting here if we know that there is at least one Google account enabled.
+        ///        OnlineAccountClient needs to expose some functionality for us to determine that.
+
+        // Allow 1 second for the callback to initialize config_
+        std::unique_lock<std::mutex> lock(config_mutex_);
+        config_cond_.wait_for(lock, std::chrono::seconds(1), [this] { return config_ != nullptr; });
+    }
+
+    if (config_ == nullptr)
+    {
+        // If the callback was not invoked, default initialize config_
+        init_config();
+        cerr << "Vimeo scope is unauthenticated" << endl;
+        anonymous_login();
+    }
 }
 
 void Scope::stop() {

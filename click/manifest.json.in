@@ -5,12 +5,15 @@
     "hooks": {
         "vimeo": {
             "scope": "vimeo",
-            "apparmor": "apparmor.json"
+            "apparmor": "apparmor.json",
+            "account-application": "vimeo.provider",
+            "account-application": "vimeo.application",
+            "account-service": "vimeo.service"
         }
     },
     "icon": "icon",
     "maintainer": "Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>",
     "name": "@SCOPE_NAME@",
     "title": "Vimeo scope",
-    "version": "1.0.0"
+    "version": "@SCOPE_VERSION@"
 }

@@ -46,17 +46,17 @@ struct Config {
     /*
      * The root of all API request URLs
      */
-    std::string apiroot { };
+    std::string apiroot { "https://api.vimeo.com" };
 
     /*
      * The custom HTTP user agent string for this library
      */
-    std::string user_agent { };
+    std::string user_agent { "unity-scope-vimeo 0.1; (http: //developer.vimeo.com/api/docs)" };
 
     /*
      * Default "Accept" HTTP header sent with every request if none is specified
      */
-    std::string accept { };
+    std::string accept { "application/vnd.vimeo.*+json; version=3.0" };
 
     /**
      * Have we got access to private APIs?
