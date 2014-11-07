@@ -4,5 +4,5 @@
   <name>Vimeo</name>
   <icon>vimeo</icon>
   <provider>vimeo</provider>
-  <translations>account-plugins</translations>
+  <translations>unity-scope-vimeo</translations>
 </service>

@@ -2,7 +2,7 @@
 <provider id="vimeo">
   <name>Vimeo</name>
   <icon>vimeo</icon>
-  <translations>account-plugins</translations>
+  <translations>unity-scope-vimeo</translations>
   <plugin>generic-oauth</plugin>
   <domains>.*vimeo\.com</domains>
 

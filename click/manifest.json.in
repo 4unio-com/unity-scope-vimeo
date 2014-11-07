@@ -12,7 +12,7 @@
             "account-qml-plugin": "Main.qml"
         }
     },
-    "icon": "icon",
+    "icon": "vimeo/icon.png",
     "maintainer": "Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>",
     "name": "@SCOPE_NAME@",
     "title": "Vimeo scope",

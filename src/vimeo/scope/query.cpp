@@ -18,11 +18,13 @@
 
 #include <boost/algorithm/string/trim.hpp>
 
+#include <vimeo/scope/localisation.h>
 #include <vimeo/scope/query.h>
 
 #include <unity/scopes/Annotation.h>
 #include <unity/scopes/CategorisedResult.h>
 #include <unity/scopes/CategoryRenderer.h>
+#include <unity/scopes/OnlineAccountClient.h>
 #include <unity/scopes/QueryBase.h>
 #include <unity/scopes/SearchReply.h>
 
@@ -32,6 +34,8 @@ namespace alg = boost::algorithm;
 using namespace std;
 using namespace vimeo::api;
 using namespace vimeo::scope;
+
+namespace {
 
 const static string SEARCH_CATEGORY_TEMPLATE = R"(
 {
@@ -58,7 +62,7 @@ const static string SEARCH_CATEGORY_LOGIN_NAG = R"(
   "template": {
     "category-layout": "grid",
     "card-size": "large",
-    "card-background": "color:///#DD4814"
+    "card-background": "color:///#1ab7ea"
   },
   "components": {
     "title": "title",
@@ -69,6 +73,8 @@ const static string SEARCH_CATEGORY_LOGIN_NAG = R"(
   }
 }
 )";
+
+}
 
 Query::Query(const sc::CannedQuery &query, const sc::SearchMetadata &metadata,
         Config::Ptr config) :
@@ -84,8 +90,14 @@ void Query::add_login_nag(const sc::SearchReplyProxy &reply) {
     auto cat = reply->register_category("vimeo_login_nag", "", "", rdr);
 
     sc::CategorisedResult res(cat);
-    res.set_title("Log-in to Vimeo");
-    res.set_uri("settings:///system/online-accounts");
+    res.set_title(_("Log-in to Vimeo"));
+
+    sc::OnlineAccountClient oa_client(SCOPE_INSTALL_NAME, "sharing", "vimeo");
+    oa_client.register_account_login_item(res,
+                                          query(),
+                                          sc::OnlineAccountClient::InvalidateResults,
+                                          sc::OnlineAccountClient::DoNothing);
+
     reply->push(res);
 }
 
@@ -98,6 +110,10 @@ void Query::run(sc::SearchReplyProxy const& reply) {
         Client::VideoList videos;
 
         if (query_string.empty()) {
+            bool include_login_nag = !client_.config()->authenticated;
+            if (include_login_nag) {
+                add_login_nag(reply);
+            }
 
             sc::Department::SPtr all_depts = sc::Department::create("", query,
                     "My Feed");
