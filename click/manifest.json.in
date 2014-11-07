@@ -9,7 +9,7 @@
             "account-provider": "vimeo.provider",
             "account-application": "vimeo.application",
             "account-service": "vimeo.service",
-            "account-qml-plugin": "Main.qml"
+            "account-qml-plugin": "qml-plugin"
         }
     },
     "icon": "vimeo/icon.png",
