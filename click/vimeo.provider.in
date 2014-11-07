@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <provider id="vimeo">
   <name>Vimeo</name>
-  <icon>vimeo</icon>
+  <icon>vimeo/icon.png</icon>
   <translations>unity-scope-vimeo</translations>
   <plugin>generic-oauth</plugin>
   <domains>.*vimeo\.com</domains>

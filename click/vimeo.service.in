@@ -2,7 +2,7 @@
 <service id="vimeo">
   <type>sharing</type>
   <name>Vimeo</name>
-  <icon>vimeo</icon>
+  <icon>vimeo/icon.png</icon>
   <provider>vimeo</provider>
   <translations>unity-scope-vimeo</translations>
 </service>
