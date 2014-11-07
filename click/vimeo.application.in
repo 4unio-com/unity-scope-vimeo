@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <application>
-  <description>Vimeo</description>
+  <description>Vimeo scope</description>
   <desktop-entry>@SCOPE_INSTALL_NAME@.desktop</desktop-entry>
   <services>
     <service id="@SCOPE_INSTALL_NAME@">
