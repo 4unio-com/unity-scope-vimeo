@@ -46,7 +46,7 @@ include_directories(
   ${SCOPE_INCLUDE_DIRS}
 )
 
-set(SCOPE_VERSION "1.0.0")
+set(SCOPE_VERSION "1.0.1")
 set(SCOPE_NAME "com.ubuntu.scopes.vimeo")
 set(SCOPE_INSTALL_NAME "${SCOPE_NAME}_vimeo")
 set(SCOPE_ACCOUNTS_NAME "${SCOPE_NAME}_accounts")
