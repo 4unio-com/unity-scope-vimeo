@@ -6,9 +6,11 @@
         "vimeo": {
             "scope": "vimeo",
             "apparmor": "apparmor.json",
-            "account-provider": "vimeo.provider",
             "account-application": "vimeo.application",
-            "account-service": "vimeo.service",
+            "account-service": "vimeo.service"
+        },
+        "accounts": {
+            "account-provider": "vimeo.provider",
             "account-qml-plugin": "qml-plugin"
         }
     },

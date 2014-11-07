@@ -49,12 +49,14 @@ include_directories(
 set(SCOPE_VERSION "1.0.0")
 set(SCOPE_NAME "com.ubuntu.scopes.vimeo")
 set(SCOPE_INSTALL_NAME "${SCOPE_NAME}_vimeo")
+set(SCOPE_ACCOUNTS_NAME "${SCOPE_NAME}_accounts")
 set(SYMBOL_MAP "${CMAKE_SOURCE_DIR}/data/${SCOPE_NAME}.map")
 set(GETTEXT_PACKAGE "unity-scope-vimeo")
 
 add_definitions(-DGETTEXT_PACKAGE="${GETTEXT_PACKAGE}")
 add_definitions(-DSCOPE_NAME="${SCOPE_NAME}")
 add_definitions(-DSCOPE_INSTALL_NAME="${SCOPE_INSTALL_NAME}")
+add_definitions(-DSCOPE_ACCOUNTS_NAME="${SCOPE_ACCOUNTS_NAME}")
 
 set(SCOPE_INSTALL_DIR "vimeo")
 add_subdirectory(click)

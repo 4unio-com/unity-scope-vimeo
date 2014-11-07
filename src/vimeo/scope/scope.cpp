@@ -121,7 +121,7 @@ void Scope::start(string const&) {
     if (getenv("VIMEO_SCOPE_IGNORE_ACCOUNTS") == nullptr) {
         oa_client_.reset(
                 new sc::OnlineAccountClient(SCOPE_INSTALL_NAME,
-                        "sharing", "vimeo"));
+                        "sharing", SCOPE_ACCOUNTS_NAME));
         oa_client_->set_service_update_callback(
                 std::bind(&Scope::service_update, this, std::placeholders::_1));
 

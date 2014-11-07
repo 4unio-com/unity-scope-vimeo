@@ -92,7 +92,7 @@ void Query::add_login_nag(const sc::SearchReplyProxy &reply) {
     sc::CategorisedResult res(cat);
     res.set_title(_("Log-in to Vimeo"));
 
-    sc::OnlineAccountClient oa_client(SCOPE_INSTALL_NAME, "sharing", SCOPE_INSTALL_NAME);
+    sc::OnlineAccountClient oa_client(SCOPE_INSTALL_NAME, "sharing", SCOPE_ACCOUNTS_NAME);
     oa_client.register_account_login_item(res,
                                           query(),
                                           sc::OnlineAccountClient::InvalidateResults,
