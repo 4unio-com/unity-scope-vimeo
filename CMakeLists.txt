@@ -46,7 +46,8 @@ include_directories(
   ${SCOPE_INCLUDE_DIRS}
 )
 
-set(SCOPE_VERSION "1.0.1")
+set(SCOPE_VERSION "1.0.1-${BZR_REVNO}")
+set(CMAKE_INSTALL_PREFIX /)
 set(SCOPE_NAME "com.ubuntu.scopes.vimeo")
 set(SCOPE_INSTALL_NAME "${SCOPE_NAME}_vimeo")
 set(SCOPE_ACCOUNTS_NAME "${SCOPE_NAME}_accounts")
@@ -57,6 +58,13 @@ add_definitions(-DGETTEXT_PACKAGE="${GETTEXT_PACKAGE}")
 add_definitions(-DSCOPE_NAME="${SCOPE_NAME}")
 add_definitions(-DSCOPE_INSTALL_NAME="${SCOPE_INSTALL_NAME}")
 add_definitions(-DSCOPE_ACCOUNTS_NAME="${SCOPE_ACCOUNTS_NAME}")
+
+# This command figures out the target architecture and puts it into the manifest file
+execute_process(
+  COMMAND dpkg-architecture -qDEB_HOST_ARCH
+  OUTPUT_VARIABLE CLICK_ARCH
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 
 set(SCOPE_INSTALL_DIR "vimeo")
 add_subdirectory(click)
