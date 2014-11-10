@@ -86,6 +86,10 @@ void Query::cancelled() {
 }
 
 void Query::add_login_nag(const sc::SearchReplyProxy &reply) {
+    if (getenv("VIMEO_SCOPE_IGNORE_ACCOUNTS")) {
+        return;
+    }
+
     sc::CategoryRenderer rdr(SEARCH_CATEGORY_LOGIN_NAG);
     auto cat = reply->register_category("vimeo_login_nag", "", "", rdr);
 

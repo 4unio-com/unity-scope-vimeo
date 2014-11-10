@@ -92,8 +92,8 @@ TEST_F(TestVimeoScope, empty_search_string) {
     departments->add_subdepartment(sc::Department::create("4", query, "Cherry"));
     EXPECT_CALL(reply, register_departments(IsDepartment(departments))).Times(1);
 
-    EXPECT_CALL(reply, register_category("vimeo", "Vimeo", "", _)).Times(1)
-            .WillOnce(Return(make_shared<sct::Category>("vimeo", "Vimeo", "", renderer)));
+    EXPECT_CALL(reply, register_category("vimeo", "", "", _)).Times(1)
+            .WillOnce(Return(make_shared<sct::Category>("vimeo", "", "", renderer)));
 
     EXPECT_CALL(reply, push(Matcher<sc::CategorisedResult const&>(AllOf(
             ResultProp("uri", "http://vimeo.com/videos/1"),
@@ -131,8 +131,8 @@ TEST_F(TestVimeoScope, apple_department) {
     departments->add_subdepartment(sc::Department::create("4", query, "Cherry"));
     EXPECT_CALL(reply, register_departments(IsDepartment(departments))).Times(1);
 
-    EXPECT_CALL(reply, register_category("vimeo", "Vimeo", "", _)).Times(1)
-                .WillOnce(Return(make_shared<sct::Category>("vimeo", "Vimeo", "", renderer)));
+    EXPECT_CALL(reply, register_category("vimeo", "", "", _)).Times(1)
+                .WillOnce(Return(make_shared<sct::Category>("vimeo", "", "", renderer)));
 
     EXPECT_CALL(reply, push(Matcher<sc::CategorisedResult const&>(AllOf(
             ResultProp("uri", "http://vimeo.com/videos/apple_1"),
@@ -169,8 +169,8 @@ TEST_F(TestVimeoScope, non_empty_query) {
 
     sc::CannedQuery query(SCOPE_NAME, "query", ""); // searching with query text
 
-    EXPECT_CALL(reply, register_category("vimeo", "Vimeo", "", _)).Times(1)
-                .WillOnce(Return(make_shared<sct::Category>("vimeo", "Vimeo", "", renderer)));
+    EXPECT_CALL(reply, register_category("vimeo", "", "", _)).Times(1)
+                .WillOnce(Return(make_shared<sct::Category>("vimeo", "", "", renderer)));
 
     EXPECT_CALL(reply, push(Matcher<sc::CategorisedResult const&>(AllOf(
             ResultProp("uri", "http://vimeo.com/videos/query_1"),
