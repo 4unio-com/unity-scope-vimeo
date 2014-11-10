@@ -114,10 +114,6 @@ void Query::run(sc::SearchReplyProxy const& reply) {
         Client::VideoList videos;
 
         if (query_string.empty()) {
-            bool include_login_nag = !client_.config()->authenticated;
-            if (include_login_nag) {
-                add_login_nag(reply);
-            }
 
             sc::Department::SPtr all_depts = sc::Department::create("", query,
                     "My Feed");
@@ -127,6 +123,11 @@ void Query::run(sc::SearchReplyProxy const& reply) {
                 all_depts->add_subdepartment(dept);
             }
             reply->register_departments(all_depts);
+
+            bool include_login_nag = !client_.config()->authenticated;
+            if (include_login_nag) {
+                add_login_nag(reply);
+            }
 
             if (!query.department_id().empty()) {
                 videos = client_.channels_videos(query.department_id());
@@ -139,7 +140,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
             videos = client_.videos(query_string);
         }
 
-        auto cat = reply->register_category("vimeo", "Vimeo", "",
+        auto cat = reply->register_category("vimeo", "", "",
                 sc::CategoryRenderer(SEARCH_CATEGORY_TEMPLATE));
 
         for (Video::Ptr video : videos) {
@@ -154,11 +155,6 @@ void Query::run(sc::SearchReplyProxy const& reply) {
                 return;
             }
         }
-
-//        FIXME Add this back when direct activation can be controlled
-//        if (!client_.config()->authenticated) {
-//            add_login_nag(reply);
-//        }
     } catch (domain_error &e) {
     }
 }
