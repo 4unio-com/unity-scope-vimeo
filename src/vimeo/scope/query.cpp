@@ -16,6 +16,7 @@
  * Author: Pete Woods <pete.woods@canonical.com>
  */
 
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
 #include <vimeo/scope/localisation.h>
@@ -122,19 +123,29 @@ void Query::run(sc::SearchReplyProxy const& reply) {
                         channel->id(), query, channel->name());
                 all_depts->add_subdepartment(dept);
             }
-            reply->register_departments(all_depts);
 
             bool include_login_nag = !client_.config()->authenticated;
-            if (include_login_nag) {
-                add_login_nag(reply);
-            }
 
-            if (!query.department_id().empty()) {
+            if (alg::starts_with(query.department_id(), "aggregated:")) {
+                // Need to add a dummy department to pass the validation check
+                sc::Department::SPtr dummy = sc::Department::create(
+                        query.department_id(), query, " ");
+                all_depts->add_subdepartment(dummy);
+
+                include_login_nag = false;
+                videos = client_.channels_videos("staffpicks");
+            } else if (!query.department_id().empty()) {
                 videos = client_.channels_videos(query.department_id());
             } else if (client_.config()->authenticated) {
                 videos = client_.feed();
             } else {
                 videos = client_.channels_videos("staffpicks");
+            }
+
+            reply->register_departments(all_depts);
+
+            if (include_login_nag) {
+                add_login_nag(reply);
             }
         } else {
             videos = client_.videos(query_string);
