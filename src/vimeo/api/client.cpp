@@ -80,7 +80,7 @@ public:
         net::Uri uri = net::make_uri(config_->apiroot, path,
                 complete_parameters);
         configuration.uri = client_->uri_to_string(uri);
-        if (config_->authenticated) {
+        if (!config_->access_token.empty()) {
             configuration.header.add("Authorization",
                     "bearer " + config_->access_token);
         } else if (!config_->client_id.empty() && !config_->client_secret.empty()) {
