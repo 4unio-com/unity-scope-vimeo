@@ -25,6 +25,7 @@
 
 #include <atomic>
 #include <deque>
+#include <future>
 #include <map>
 #include <string>
 #include <core/net/http/request.h>
@@ -47,29 +48,23 @@ public:
 
     virtual ~Client() = default;
 
-    virtual ChannelList channels();
+    virtual std::future<ChannelList> channels();
 
-    virtual VideoList videos(const std::string &query = std::string());
+    virtual std::future<VideoList> videos(const std::string &query = std::string());
 
-    virtual VideoList channels_videos(const std::string &channel);
+    virtual std::future<VideoList> channels_videos(const std::string &channel);
 
-    virtual VideoList feed();
+    virtual std::future<VideoList> feed();
 
     virtual void cancel();
 
     virtual Config::Ptr config();
 
 protected:
-    void get(const core::net::Uri::Path &path,
-            const core::net::Uri::QueryParameters &parameters,
-            Json::Value &root);
+    class Priv;
+    friend Priv;
 
-    core::net::http::Request::Progress::Next progress_report(
-            const core::net::http::Request::Progress& progress);
-
-    Config::Ptr config_;
-
-    std::atomic<bool> cancelled_;
+    std::shared_ptr<Priv> p;
 };
 
 }

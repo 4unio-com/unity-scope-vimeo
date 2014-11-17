@@ -27,7 +27,13 @@ find_package(
   Boost
   COMPONENTS
     filesystem
+    iostreams
     system
+  REQUIRED
+)
+
+find_package(
+  Threads
   REQUIRED
 )
 

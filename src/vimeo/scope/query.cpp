@@ -29,6 +29,8 @@
 #include <unity/scopes/QueryBase.h>
 #include <unity/scopes/SearchReply.h>
 
+#include <future>
+
 namespace sc = unity::scopes;
 namespace alg = boost::algorithm;
 
@@ -75,6 +77,14 @@ const static string SEARCH_CATEGORY_LOGIN_NAG = R"(
 }
 )";
 
+template<typename T>
+static T get_or_throw(future<T> &f) {
+    if (f.wait_for(std::chrono::seconds(10)) != future_status::ready) {
+        throw domain_error("HTTP request timeout");
+    }
+    return f.get();
+}
+
 }
 
 Query::Query(const sc::CannedQuery &query, const sc::SearchMetadata &metadata,
@@ -112,49 +122,64 @@ void Query::run(sc::SearchReplyProxy const& reply) {
 
         string query_string = alg::trim_copy(query.query_string());
 
-        Client::VideoList videos;
+        // Avoid blocking on HTTP requests at this point
+
+        future<Client::VideoList> videos_future;
+        future<Client::ChannelList> channels_future;
+        bool reading_channels = false;
+
+        sc::Department::SPtr all_depts = sc::Department::create("", query,
+                "My Feed");
+        sc::Department::SPtr dummy_dept;
+
+        bool include_login_nag = !client_.config()->authenticated;
 
         if (query_string.empty()) {
+            channels_future = client_.channels();
+            reading_channels = true;
 
-            sc::Department::SPtr all_depts = sc::Department::create("", query,
-                    "My Feed");
-            for (Channel::Ptr channel : client_.channels()) {
+            if (alg::starts_with(query.department_id(), "aggregated:")) {
+                // Need to add a dummy department to pass the validation check
+                dummy_dept = sc::Department::create(
+                        query.department_id(), query, " ");
+
+                include_login_nag = false;
+                videos_future = client_.channels_videos("staffpicks");
+            } else if (!query.department_id().empty()) {
+                videos_future = client_.channels_videos(query.department_id());
+            } else if (client_.config()->authenticated) {
+                videos_future = client_.feed();
+            } else {
+                videos_future = client_.channels_videos("staffpicks");
+            }
+
+        } else {
+            include_login_nag = false;
+            videos_future = client_.videos(query_string);
+        }
+
+        // Now wait on the HTTP requests
+
+        if (reading_channels) {
+            for (Channel::Ptr channel : get_or_throw(channels_future)) {
                 sc::Department::SPtr dept = sc::Department::create(
                         channel->id(), query, channel->name());
                 all_depts->add_subdepartment(dept);
             }
-
-            bool include_login_nag = !client_.config()->authenticated;
-
-            if (alg::starts_with(query.department_id(), "aggregated:")) {
-                // Need to add a dummy department to pass the validation check
-                sc::Department::SPtr dummy = sc::Department::create(
-                        query.department_id(), query, " ");
-                all_depts->add_subdepartment(dummy);
-
-                include_login_nag = false;
-                videos = client_.channels_videos("staffpicks");
-            } else if (!query.department_id().empty()) {
-                videos = client_.channels_videos(query.department_id());
-            } else if (client_.config()->authenticated) {
-                videos = client_.feed();
-            } else {
-                videos = client_.channels_videos("staffpicks");
+            if (dummy_dept) {
+                all_depts->add_subdepartment(dummy_dept);
             }
-
             reply->register_departments(all_depts);
+        }
 
-            if (include_login_nag) {
-                add_login_nag(reply);
-            }
-        } else {
-            videos = client_.videos(query_string);
+        if (include_login_nag) {
+            add_login_nag(reply);
         }
 
         auto cat = reply->register_category("vimeo", "", "",
                 sc::CategoryRenderer(SEARCH_CATEGORY_TEMPLATE));
 
-        for (Video::Ptr video : videos) {
+        for (Video::Ptr video : get_or_throw(videos_future)) {
             sc::CategorisedResult res(cat);
             res.set_uri(video->uri());
             res.set_title(video->name());

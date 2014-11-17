@@ -223,7 +223,7 @@ def new_app():
         (r"/channels", Channels),
         (r"/channels/(.*)/videos", ChannelsVideos),
         (r"/videos", Videos),
-    ])
+    ], gzip=True)
     sockets = tornado.netutil.bind_sockets(0, '127.0.0.1')
     server = tornado.httpserver.HTTPServer(application)
     server.add_sockets(sockets)
