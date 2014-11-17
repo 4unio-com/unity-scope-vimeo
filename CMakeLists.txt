@@ -1,4 +1,4 @@
-project(unity-scope-vimeo CXX)
+project(unity-scope-vimeo C CXX)
 cmake_minimum_required(VERSION 2.8.10)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 
