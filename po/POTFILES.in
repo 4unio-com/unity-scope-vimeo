@@ -1,0 +1,17 @@
+[type: gettext/ini] data/com.ubuntu.scopes.vimeo.ini.in
+include/vimeo/api/video.h
+include/vimeo/api/login.h
+include/vimeo/api/channel.h
+include/vimeo/api/config.h
+include/vimeo/api/client.h
+include/vimeo/scope/preview.h
+include/vimeo/scope/localisation.h
+include/vimeo/scope/query.h
+include/vimeo/scope/scope.h
+src/vimeo/api/client.cpp
+src/vimeo/api/channel.cpp
+src/vimeo/api/login.cpp
+src/vimeo/api/video.cpp
+src/vimeo/scope/query.cpp
+src/vimeo/scope/scope.cpp
+src/vimeo/scope/preview.cpp

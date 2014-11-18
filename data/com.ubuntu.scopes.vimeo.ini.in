@@ -1,9 +1,9 @@
 [ScopeConfig]
-DisplayName = Vimeo
-Description = Search Vimeo for videos and browse channels
-Art = screenshot.jpg
-Author = Canonical Ltd.
-Icon = icon.png
+_DisplayName=Vimeo
+_Description=Search Vimeo for videos and browse channels
+Art=screenshot.jpg
+Author=Canonical Ltd.
+Icon=icon.png
 
 [Appearance]
 PageHeader.Logo = logo.png

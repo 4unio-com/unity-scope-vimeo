@@ -22,6 +22,7 @@ add_definitions(
 
 include(GNUInstallDirs)
 find_package(PkgConfig)
+find_package(Intltool)
 
 find_package(
   Boost
@@ -77,6 +78,7 @@ add_subdirectory(click)
 
 add_subdirectory(src)
 add_subdirectory(data)
+add_subdirectory(po)
 
 if(NOT CLICK_MODE)
   enable_testing()
