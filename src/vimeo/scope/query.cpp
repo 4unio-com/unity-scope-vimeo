@@ -88,8 +88,9 @@ static T get_or_throw(future<T> &f) {
 }
 
 Query::Query(const sc::CannedQuery &query, const sc::SearchMetadata &metadata,
-        Config::Ptr config) :
-        sc::SearchQueryBase(query, metadata), client_(config) {
+             std::shared_ptr<sc::OnlineAccountClient> oa_client) :
+        sc::SearchQueryBase(query, metadata),
+        client_(oa_client) {
 }
 
 void Query::cancelled() {
