@@ -49,7 +49,7 @@ include_directories(
   ${SCOPE_INCLUDE_DIRS}
 )
 
-set(SCOPE_VERSION "1.0.1-${BZR_REVNO}")
+set(SCOPE_VERSION "1.0.2-${BZR_REVNO}")
 set(CMAKE_INSTALL_PREFIX /)
 set(SCOPE_NAME "com.ubuntu.scopes.vimeo")
 set(SCOPE_INSTALL_NAME "${SCOPE_NAME}_vimeo")
