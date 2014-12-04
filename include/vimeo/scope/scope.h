@@ -19,16 +19,12 @@
 #ifndef VIMEO_SCOPE_SCOPE_H_
 #define VIMEO_SCOPE_SCOPE_H_
 
-#include <vimeo/api/config.h>
-
 #include <unity/scopes/ScopeBase.h>
 #include <unity/scopes/OnlineAccountClient.h>
 #include <unity/scopes/QueryBase.h>
 #include <unity/scopes/ReplyProxyFwd.h>
 #include <unity/scopes/QueryBase.h>
 #include <unity/scopes/PreviewQueryBase.h>
-
-#include <condition_variable>
 
 namespace vimeo {
 
@@ -48,20 +44,6 @@ public:
             unity::scopes::SearchMetadata const&) override;
 
 protected:
-    void anonymous_login();
-
-    void service_update(unity::scopes::OnlineAccountClient::ServiceStatus const& status);
-
-    void update_config();
-
-    void init_config();
-
-    vimeo::api::Config::Ptr config_;
-
-    std::mutex config_mutex_;
-
-    std::condition_variable config_cond_;
-
     std::shared_ptr<unity::scopes::OnlineAccountClient> oa_client_;
 };
 
