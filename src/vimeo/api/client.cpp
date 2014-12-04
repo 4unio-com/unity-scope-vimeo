@@ -17,7 +17,10 @@
  */
 
 #include <vimeo/api/client.h>
+#include <vimeo/api/login.h>
 
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
 #include <core/net/error.h>
@@ -26,13 +29,19 @@
 #include <core/net/http/response.h>
 #include <json/json.h>
 
+#include <fstream>
+
 namespace http = core::net::http;
+namespace fs = boost::filesystem;
 namespace io = boost::iostreams;
 namespace json = Json;
 namespace net = core::net;
 
 using namespace vimeo::api;
 using namespace std;
+
+static const char* CLIENT_ID = "b6758ff9f929cdb9f45a8477732bdbc4c6a89c7e";
+static const char* CLIENT_SECRET = "a3222f38f799b3b528e29418fe062c02c677a249";
 
 namespace {
 
@@ -161,6 +170,41 @@ public:
         std::lock_guard<std::mutex> lock(config_mutex_);
         update_config();
         return config_.authenticated;
+    }
+
+    void anonymous_login() {
+        fs::path saved_token_dir = fs::path(getenv("HOME"))
+                / ".local" / "share" / "unity-scopes" / "leaf-net" / SCOPE_NAME;
+        fs::path saved_token_path = saved_token_dir
+                / "anonymous_auth_token";
+
+        bool save_auth_token = getenv("VIMEO_SCOPE_IGNORE_ACCOUNTS") == nullptr;
+
+        config_.client_id = CLIENT_ID;
+        config_.client_secret = CLIENT_SECRET;
+
+        if (fs::exists(saved_token_path) && save_auth_token) {
+            ifstream in(saved_token_path.native(), ios::in | ios::binary);
+            if (in) {
+                ostringstream contents;
+                contents << in.rdbuf();
+                in.close();
+                config_.access_token = contents.str();
+            }
+            cerr << "  re-using saved auth_token" << endl;
+        } else {
+            config_.access_token = unauthenticated(CLIENT_ID, CLIENT_SECRET,
+                    config_.apiroot);
+            if (save_auth_token) {
+                fs::create_directories(saved_token_dir);
+                ofstream out(saved_token_path.native(), ios::out | ios::binary);
+                if (out) {
+                    out << config_.access_token;
+                    out.close();
+                }
+            }
+            cerr << "  new auth_token" << endl;
+        }
     }
 
     void update_config() {
