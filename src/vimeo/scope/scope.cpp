@@ -16,22 +16,15 @@
  * Author: Pete Woods <pete.woods@canonical.com>
  */
 
-#include <vimeo/api/login.h>
+#include <vimeo/scope/localisation.h>
 #include <vimeo/scope/scope.h>
 #include <vimeo/scope/query.h>
 #include <vimeo/scope/preview.h>
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-
 namespace sc = unity::scopes;
 using namespace std;
-using namespace boost;
 using namespace vimeo::scope;
 using namespace vimeo::api;
-
-static const char* CLIENT_ID = "b6758ff9f929cdb9f45a8477732bdbc4c6a89c7e";
-static const char* CLIENT_SECRET = "a3222f38f799b3b528e29418fe062c02c677a249";
 
 void Scope::start(string const&) {
     setlocale(LC_ALL, "");
