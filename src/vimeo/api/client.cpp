@@ -243,6 +243,7 @@ public:
             config_.client_id = "";
             config_.client_secret = "";
             std::cerr << "YouTube scope is unauthenticated" << std::endl;
+            anonymous_login();
         } else {
             std::cerr << "YouTube scope is authenticated" << std::endl;
         }
