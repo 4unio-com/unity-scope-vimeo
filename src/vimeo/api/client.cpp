@@ -215,6 +215,7 @@ public:
         }
 
         if (getenv("VIMEO_SCOPE_IGNORE_ACCOUNTS") != nullptr) {
+            anonymous_login();
             return;
         }
 
