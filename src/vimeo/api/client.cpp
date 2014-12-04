@@ -208,11 +208,11 @@ public:
     }
 
     void update_config() {
-        if (getenv("YOUTUBE_SCOPE_APIROOT")) {
-            config_.apiroot = getenv("YOUTUBE_SCOPE_APIROOT");
+        if (getenv("VIMEO_SCOPE_APIROOT")) {
+            config_.apiroot = getenv("VIMEO_SCOPE_APIROOT");
         }
 
-        if (getenv("YOUTUBE_SCOPE_IGNORE_ACCOUNTS") != nullptr) {
+        if (getenv("VIMEO_SCOPE_IGNORE_ACCOUNTS") != nullptr) {
             return;
         }
 
@@ -223,7 +223,7 @@ public:
         ///if (oa_client_ == nullptr) {
             oa_client_.reset(
                     new unity::scopes::OnlineAccountClient(SCOPE_INSTALL_NAME,
-                            "sharing", "google"));
+                            "sharing", SCOPE_ACCOUNTS_NAME));
         ///} else {
         ///    oa_client_->refresh_service_statuses();
         ///}
@@ -242,10 +242,10 @@ public:
             config_.access_token = "";
             config_.client_id = "";
             config_.client_secret = "";
-            std::cerr << "YouTube scope is unauthenticated" << std::endl;
+            std::cerr << "Vimeo scope is unauthenticated" << std::endl;
             anonymous_login();
         } else {
-            std::cerr << "YouTube scope is authenticated" << std::endl;
+            std::cerr << "Vimeo scope is authenticated" << std::endl;
         }
     }
 };
