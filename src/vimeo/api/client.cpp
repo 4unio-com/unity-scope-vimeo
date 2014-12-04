@@ -208,6 +208,8 @@ public:
     }
 
     void update_config() {
+        config_ = Config();
+
         if (getenv("VIMEO_SCOPE_APIROOT")) {
             config_.apiroot = getenv("VIMEO_SCOPE_APIROOT");
         }
@@ -239,9 +241,6 @@ public:
         }
 
         if (!config_.authenticated) {
-            config_.access_token = "";
-            config_.client_id = "";
-            config_.client_secret = "";
             std::cerr << "Vimeo scope is unauthenticated" << std::endl;
             anonymous_login();
         } else {
