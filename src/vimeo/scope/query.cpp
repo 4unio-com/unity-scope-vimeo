@@ -88,8 +88,9 @@ static T get_or_throw(future<T> &f) {
 }
 
 Query::Query(const sc::CannedQuery &query, const sc::SearchMetadata &metadata,
-        Config::Ptr config) :
-        sc::SearchQueryBase(query, metadata), client_(config) {
+             std::shared_ptr<sc::OnlineAccountClient> oa_client) :
+        sc::SearchQueryBase(query, metadata),
+        client_(oa_client) {
 }
 
 void Query::cancelled() {
@@ -132,7 +133,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
                 "My Feed");
         sc::Department::SPtr dummy_dept;
 
-        bool include_login_nag = !client_.config()->authenticated;
+        bool include_login_nag = !client_.authenticated();
 
         if (query_string.empty()) {
             channels_future = client_.channels();
@@ -147,7 +148,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
                 videos_future = client_.channels_videos("staffpicks");
             } else if (!query.department_id().empty()) {
                 videos_future = client_.channels_videos(query.department_id());
-            } else if (client_.config()->authenticated) {
+            } else if (client_.authenticated()) {
                 videos_future = client_.feed();
             } else {
                 videos_future = client_.channels_videos("staffpicks");

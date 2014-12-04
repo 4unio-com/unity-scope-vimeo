@@ -17,7 +17,10 @@
  */
 
 #include <vimeo/api/client.h>
+#include <vimeo/api/login.h>
 
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
 #include <core/net/error.h>
@@ -26,13 +29,19 @@
 #include <core/net/http/response.h>
 #include <json/json.h>
 
+#include <fstream>
+
 namespace http = core::net::http;
+namespace fs = boost::filesystem;
 namespace io = boost::iostreams;
 namespace json = Json;
 namespace net = core::net;
 
 using namespace vimeo::api;
 using namespace std;
+
+static const char* CLIENT_ID = "b6758ff9f929cdb9f45a8477732bdbc4c6a89c7e";
+static const char* CLIENT_SECRET = "a3222f38f799b3b528e29418fe062c02c677a249";
 
 namespace {
 
@@ -50,9 +59,9 @@ static deque<shared_ptr<T>> get_list(const json::Value &root) {
 
 class Client::Priv {
 public:
-    Priv(Config::Ptr config) :
-            client_(http::make_client()), worker_ { [this]() {client_->run();} }, config_(
-                    config), cancelled_(false) {
+    Priv(std::shared_ptr<unity::scopes::OnlineAccountClient> oa_client) :
+            client_(http::make_client()), worker_ { [this]() {client_->run();} },
+            oa_client_(oa_client), cancelled_(false) {
     }
 
     ~Priv() {
@@ -66,31 +75,36 @@ public:
 
     std::thread worker_;
 
-    Config::Ptr config_;
+    Config config_;
+    std::mutex config_mutex_;
+
+    std::shared_ptr<unity::scopes::OnlineAccountClient> oa_client_;
 
     std::atomic<bool> cancelled_;
 
     void get(const net::Uri::Path &path,
             const net::Uri::QueryParameters &parameters,
             http::Request::Handler &handler) {
+        std::lock_guard<std::mutex> lock(config_mutex_);
+        update_config();
 
         http::Request::Configuration configuration;
         net::Uri::QueryParameters complete_parameters(parameters);
 
-        net::Uri uri = net::make_uri(config_->apiroot, path,
+        net::Uri uri = net::make_uri(config_.apiroot, path,
                 complete_parameters);
         configuration.uri = client_->uri_to_string(uri);
-        if (!config_->access_token.empty()) {
+        if (!config_.access_token.empty()) {
             configuration.header.add("Authorization",
-                    "bearer " + config_->access_token);
-        } else if (!config_->client_id.empty() && !config_->client_secret.empty()) {
+                    "bearer " + config_.access_token);
+        } else if (!config_.client_id.empty() && !config_.client_secret.empty()) {
             string auth = "basic "
                     + client_->base64_encode(
-                            config_->client_id + ":" + config_->client_secret);
+                            config_.client_id + ":" + config_.client_secret);
             configuration.header.add("Authorization", auth);
         }
-        configuration.header.add("Accept", config_->accept);
-        configuration.header.add("User-Agent", config_->user_agent + " (gzip)");
+        configuration.header.add("Accept", config_.accept);
+        configuration.header.add("User-Agent", config_.user_agent + " (gzip)");
         configuration.header.add("Accept-Encoding", "gzip");
 
         auto request = client_->head(configuration);
@@ -151,10 +165,93 @@ public:
 
         return prom->get_future();
     }
+
+    bool authenticated() {
+        std::lock_guard<std::mutex> lock(config_mutex_);
+        update_config();
+        return config_.authenticated;
+    }
+
+    void anonymous_login() {
+        fs::path saved_token_dir = fs::path(getenv("HOME"))
+                / ".local" / "share" / "unity-scopes" / "leaf-net" / SCOPE_NAME;
+        fs::path saved_token_path = saved_token_dir
+                / "anonymous_auth_token";
+
+        bool save_auth_token = getenv("VIMEO_SCOPE_IGNORE_ACCOUNTS") == nullptr;
+
+        config_.client_id = CLIENT_ID;
+        config_.client_secret = CLIENT_SECRET;
+
+        if (fs::exists(saved_token_path) && save_auth_token) {
+            ifstream in(saved_token_path.native(), ios::in | ios::binary);
+            if (in) {
+                ostringstream contents;
+                contents << in.rdbuf();
+                in.close();
+                config_.access_token = contents.str();
+            }
+            cerr << "  re-using saved auth_token" << endl;
+        } else {
+            config_.access_token = unauthenticated(CLIENT_ID, CLIENT_SECRET,
+                    config_.apiroot);
+            if (save_auth_token) {
+                fs::create_directories(saved_token_dir);
+                ofstream out(saved_token_path.native(), ios::out | ios::binary);
+                if (out) {
+                    out << config_.access_token;
+                    out.close();
+                }
+            }
+            cerr << "  new auth_token" << endl;
+        }
+    }
+
+    void update_config() {
+        if (getenv("VIMEO_SCOPE_APIROOT")) {
+            config_.apiroot = getenv("VIMEO_SCOPE_APIROOT");
+        }
+
+        if (getenv("VIMEO_SCOPE_IGNORE_ACCOUNTS") != nullptr) {
+            return;
+        }
+
+        /// TODO: The code commented out below should be uncommented as soon as
+        /// OnlineAccountClient::refresh_service_statuses() is fixed (Bug #1398813).
+        /// For now we have to re-instantiate a new OnlineAccountClient each time.
+
+        ///if (oa_client_ == nullptr) {
+            oa_client_.reset(
+                    new unity::scopes::OnlineAccountClient(SCOPE_INSTALL_NAME,
+                            "sharing", SCOPE_ACCOUNTS_NAME));
+        ///} else {
+        ///    oa_client_->refresh_service_statuses();
+        ///}
+
+        for (auto const& status : oa_client_->get_service_statuses()) {
+            if (status.service_authenticated) {
+                config_.authenticated = true;
+                config_.access_token = status.access_token;
+                config_.client_id = status.client_id;
+                config_.client_secret = status.client_secret;
+                break;
+            }
+        }
+
+        if (!config_.authenticated) {
+            config_.access_token = "";
+            config_.client_id = "";
+            config_.client_secret = "";
+            std::cerr << "Vimeo scope is unauthenticated" << std::endl;
+            anonymous_login();
+        } else {
+            std::cerr << "Vimeo scope is authenticated" << std::endl;
+        }
+    }
 };
 
-Client::Client(Config::Ptr config) :
-        p(new Priv(config)) {
+Client::Client(std::shared_ptr<unity::scopes::OnlineAccountClient> oa_client) :
+        p(new Priv(oa_client)) {
 }
 
 future<Client::VideoList> Client::videos(const string &query) {
@@ -190,7 +287,7 @@ void Client::cancel() {
     p->cancelled_ = true;
 }
 
-Config::Ptr Client::config() {
-    return p->config_;
+bool Client::authenticated() {
+    return p->authenticated();
 }
 
