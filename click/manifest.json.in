@@ -1,6 +1,6 @@
 {
     "description": "Vimeo scope",
-    "framework": "ubuntu-sdk-15.04.2",
+    "framework": "ubuntu-sdk-15.04",
     "architecture": "@CLICK_ARCH@",
     "hooks": {
         "vimeo": {
