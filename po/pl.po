@@ -6,26 +6,25 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: unity-scope-vimeo\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-13 16:35-0400\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-11-18 15:19+0000\n"
 "PO-Revision-Date: 2015-10-22 17:43+0000\n"
 "Last-Translator: Bartosz Kosiorek <Unknown>\n"
 "Language-Team: Polish <pl@li.org>\n"
-"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2015-10-23 05:49+0000\n"
 "X-Generator: Launchpad (build 17812)\n"
 
-#: ../src/vimeo/scope/query.cpp:109
-msgid "Log-in to Vimeo"
-msgstr "Zaloguj do Vimeo"
+#: ../data/com.ubuntu.scopes.vimeo.ini.in.h:1
+msgid "Vimeo"
+msgstr "Vimeo"
 
 #: ../data/com.ubuntu.scopes.vimeo.ini.in.h:2
 msgid "Search Vimeo for videos and browse channels"
 msgstr "Przeszukaj Vimeo w celu odnalezenia filmów oraz kanałów"
 
-#: ../data/com.ubuntu.scopes.vimeo.ini.in.h:1
-msgid "Vimeo"
-msgstr "Vimeo"
+#: ../src/vimeo/scope/query.cpp:108
+msgid "Log-in to Vimeo"
+msgstr "Zaloguj do Vimeo"
