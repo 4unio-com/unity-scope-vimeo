@@ -19,6 +19,7 @@ configure_scope_files(
 install(
   FILES
     "${CMAKE_CURRENT_BINARY_DIR}/manifest.json"
+    "account-apparmor.json"
     "apparmor.json"
     "${CMAKE_CURRENT_BINARY_DIR}/vimeo.provider"
     "${CMAKE_CURRENT_BINARY_DIR}/vimeo.service"
