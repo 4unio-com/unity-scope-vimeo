@@ -1,6 +1,6 @@
 {
     "description": "Vimeo scope",
-    "framework": "ubuntu-sdk-14.10-dev2",
+    "framework": "ubuntu-sdk-15.04",
     "architecture": "@CLICK_ARCH@",
     "hooks": {
         "vimeo": {
@@ -11,7 +11,8 @@
         },
         "accounts": {
             "account-provider": "vimeo.provider",
-            "account-qml-plugin": "qml-plugin"
+            "account-qml-plugin": "qml-plugin",
+            "apparmor": "account-apparmor.json"
         }
     },
     "icon": "vimeo/icon.png",
